@@ -193,7 +193,7 @@ class _BusTrackingPageState extends State<BusTrackingPage> {
                         Text(
                           'Bus Management',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: Colors.black87,
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
@@ -201,7 +201,7 @@ class _BusTrackingPageState extends State<BusTrackingPage> {
                         Text(
                           'Track buses with GPS and save locations',
                           style: TextStyle(
-                            color: Colors.white70,
+                            color: Colors.black54,
                             fontSize: 14,
                           ),
                         ),
@@ -210,7 +210,7 @@ class _BusTrackingPageState extends State<BusTrackingPage> {
                   ),
                   IconButton(
                     onPressed: _loadBuses,
-                    icon: const Icon(Icons.refresh, color: Colors.white),
+                    icon: const Icon(Icons.refresh, color: Colors.black87),
                   ),
                 ],
               ),
