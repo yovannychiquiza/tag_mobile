@@ -1,5 +1,6 @@
 class AppConfig {
-  static const String _devBaseUrl = 'http://localhost:8000';
+  // static const String _devBaseUrl = 'http://localhost:8000';
+  static const String _devBaseUrl = 'https://tagback.onrender.com';
   static const String _prodBaseUrl = 'https://your-production-api.com';
   
   // Automatically detect environment
