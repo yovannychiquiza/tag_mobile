@@ -1,12 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import '../config/app_config.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://localhost:8000'; // Change to your API URL
+  static String get baseUrl => AppConfig.baseUrl;
   static const Map<String, String> headers = {
     'Content-Type': 'application/json',
   };
+
+  static Duration get timeout => Duration(seconds: AppConfig.apiTimeoutSeconds);
 
   // Get all buses
   static Future<List<Bus>> getBuses() async {
@@ -14,7 +17,7 @@ class ApiService {
       final response = await http.get(
         Uri.parse('$baseUrl/bus'),
         headers: headers,
-      );
+      ).timeout(timeout);
       
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
