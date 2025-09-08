@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'pages/welcome_page.dart';
 import 'pages/bus_tracking_page.dart';
 import 'pages/settings_page.dart';
+import 'pages/login_page.dart';
+import 'store/auth_store.dart';
 
 void main() {
   runApp(const BusTrackerApp());
@@ -28,8 +30,68 @@ class BusTrackerApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const MainScreen(),
+      home: const AuthWrapper(),
       debugShowCheckedModeBanner: false,
+      routes: {
+        '/login': (context) => const LoginPage(),
+        '/home': (context) => const MainScreen(),
+      },
+    );
+  }
+}
+
+class AuthWrapper extends StatefulWidget {
+  const AuthWrapper({super.key});
+
+  @override
+  State<AuthWrapper> createState() => _AuthWrapperState();
+}
+
+class _AuthWrapperState extends State<AuthWrapper> {
+  late final AuthStore _authStore;
+  bool _isInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _authStore = AuthStore();
+    _initializeAuth();
+  }
+
+  Future<void> _initializeAuth() async {
+    await _authStore.initialize();
+    setState(() {
+      _isInitialized = true;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_isInitialized) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    return ListenableBuilder(
+      listenable: _authStore,
+      builder: (context, child) {
+        if (_authStore.isLoading) {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+
+        if (_authStore.isAuthenticated) {
+          return const MainScreen();
+        } else {
+          return const LoginPage();
+        }
+      },
     );
   }
 }

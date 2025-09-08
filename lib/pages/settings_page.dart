@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../store/auth_store.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -73,9 +74,61 @@ class SettingsPage extends StatelessWidget {
                 },
               ),
             ),
+            const SizedBox(height: 24),
+            Card(
+              color: Colors.red[50],
+              child: ListTile(
+                leading: Icon(Icons.logout, color: Colors.red[700]),
+                title: Text(
+                  'Logout',
+                  style: TextStyle(
+                    color: Colors.red[700],
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                subtitle: const Text('Sign out of your account'),
+                onTap: () => _showLogoutDialog(context),
+              ),
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Row(
+            children: [
+              Icon(Icons.logout, color: Colors.red),
+              SizedBox(width: 8),
+              Text('Logout'),
+            ],
+          ),
+          content: const Text('Are you sure you want to logout?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                Navigator.of(context).pop();
+                final authStore = AuthStore();
+                await authStore.logout();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Logout'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
