@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
 import '../components/menu_card.dart';
 import '../store/auth_store.dart';
+import '../constants/roles.dart';
 
-class WelcomePage extends StatelessWidget {
+class WelcomePage extends StatefulWidget {
   final Function(int)? onNavigate;
   
   const WelcomePage({super.key, this.onNavigate});
+
+  @override
+  State<WelcomePage> createState() => _WelcomePageState();
+}
+
+class _WelcomePageState extends State<WelcomePage> {
+  final AuthStore _authStore = AuthStore();
 
   @override
   Widget build(BuildContext context) {
@@ -101,56 +109,76 @@ class WelcomePage extends StatelessWidget {
               
               const SizedBox(height: 40),
               
-              // Menu Options
+              // Menu Options - Role-based functional features
               Expanded(
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                  children: [
-                    MenuCard(
-                      icon: Icons.directions_bus,
-                      title: 'Track Bus',
-                      subtitle: 'Real-time location',
-                      color: Colors.blue,
-                      onTap: () {
-                        onNavigate?.call(1); // Navigate to bus tracking tab
-                      },
-                    ),
-                    MenuCard(
-                      icon: Icons.gps_fixed,
-                      title: 'Advanced Tracker',
-                      subtitle: 'Smart ETA & alerts',
-                      color: Colors.green,
-                      onTap: () {
-                        onNavigate?.call(3); // Navigate to advanced tracker tab
-                      },
-                    ),
-                    MenuCard(
-                      icon: Icons.notifications,
-                      title: 'Notifications',
-                      subtitle: 'Bus alerts',
-                      color: Colors.orange,
-                      onTap: () {
-                        // TODO: Navigate to notifications
-                      },
-                    ),
-                    MenuCard(
-                      icon: Icons.info,
-                      title: 'About',
-                      subtitle: 'App information',
-                      color: Colors.purple,
-                      onTap: () {
-                        // TODO: Navigate to about
-                      },
-                    ),
-                  ],
-                ),
+                child: _buildRoleBasedMenuCards(),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildRoleBasedMenuCards() {
+    final user = _authStore.user;
+    final roleId = user?['rol_id'] as int?;
+    
+    List<Widget> menuCards = [];
+    
+    // Show Track Bus for drivers
+    if (hasPageAccess(roleId, 'bus_tracking')) {
+      menuCards.add(
+        MenuCard(
+          icon: Icons.directions_bus,
+          title: 'Track Bus',
+          subtitle: 'Real-time location',
+          color: Colors.blue,
+          onTap: () {
+            widget.onNavigate?.call(1); // Navigate to bus tracking tab
+          },
+        ),
+      );
+    }
+    
+    // Show Advanced Tracker for trackers
+    if (hasPageAccess(roleId, 'tracker')) {
+      menuCards.add(
+        MenuCard(
+          icon: Icons.gps_fixed,
+          title: 'Advanced Tracker',
+          subtitle: 'Smart ETA & alerts',
+          color: Colors.green,
+          onTap: () {
+            widget.onNavigate?.call(3); // Navigate to advanced tracker tab
+          },
+        ),
+      );
+    }
+    
+    // If no cards available, show a message
+    if (menuCards.isEmpty) {
+      menuCards.add(
+        Container(
+          padding: const EdgeInsets.all(16),
+          child: const Center(
+            child: Text(
+              'No features available for your role',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    
+    return GridView.count(
+      crossAxisCount: 2,
+      crossAxisSpacing: 16,
+      mainAxisSpacing: 16,
+      children: menuCards,
     );
   }
 }

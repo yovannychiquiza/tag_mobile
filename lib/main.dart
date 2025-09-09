@@ -147,10 +147,19 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  void _onNavigate(int index) {
-    if (index < _screens.length) {
+  void _onNavigate(int originalIndex) {
+    // Find the navigation item with the original index
+    final targetItem = _navigationItems.firstWhere(
+      (item) => item.index == originalIndex,
+      orElse: () => _navigationItems.first,
+    );
+    
+    // Find the actual screen index in the current navigation items
+    final screenIndex = _navigationItems.indexOf(targetItem);
+    
+    if (screenIndex >= 0 && screenIndex < _screens.length) {
       setState(() {
-        _selectedIndex = index;
+        _selectedIndex = screenIndex;
       });
     }
   }
