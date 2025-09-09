@@ -103,12 +103,12 @@ class WelcomePage extends StatelessWidget {
                       },
                     ),
                     MenuCard(
-                      icon: Icons.route,
-                      title: 'Routes',
-                      subtitle: 'View all routes',
+                      icon: Icons.gps_fixed,
+                      title: 'Advanced Tracker',
+                      subtitle: 'Smart ETA & alerts',
                       color: Colors.green,
                       onTap: () {
-                        // TODO: Navigate to routes
+                        onNavigate?.call(3); // Navigate to advanced tracker tab
                       },
                     ),
                     MenuCard(

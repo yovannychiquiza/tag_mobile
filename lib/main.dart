@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'pages/welcome_page.dart';
 import 'pages/bus_tracking_page.dart';
+import 'pages/advanced_tracker_page.dart';
 import 'pages/settings_page.dart';
 import 'pages/login_page.dart';
 import 'store/auth_store.dart';
@@ -116,6 +117,7 @@ class _MainScreenState extends State<MainScreen> {
     WelcomePage(onNavigate: _onNavigate),
     const BusTrackingPage(),
     const SettingsPage(),
+    const AdvancedTrackerPage(),
   ];
 
   @override
@@ -129,6 +131,7 @@ class _MainScreenState extends State<MainScreen> {
             _selectedIndex = index;
           });
         },
+        type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -141,6 +144,10 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
             label: 'Settings',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.gps_fixed),
+            label: 'Smart Track',
           ),
         ],
       ),

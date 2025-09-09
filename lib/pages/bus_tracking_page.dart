@@ -431,8 +431,8 @@ class _BusTrackingPageState extends State<BusTrackingPage> {
               child: FlutterMap(
                 mapController: _mapController,
                 options: MapOptions(
-                  center: _userLocation ?? _defaultLocation,
-                  zoom: 13,
+                  initialCenter: _userLocation ?? _defaultLocation,
+                  initialZoom: 13,
                 ),
                 children: [
                   TileLayer(
