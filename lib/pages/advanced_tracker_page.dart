@@ -273,7 +273,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
       // Load all data in parallel
       final futures = await Future.wait([
         UserSettingsService.getUserSettings(),
-        ApiService.getBuses(),
+        ApiService.getBusesWithLocation(),
       ]);
       
       final userSettings = futures[0] as UserSettings?;
@@ -388,7 +388,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
     try {
       if (_userSettings?.routePathId == null) return;
       
-      final buses = await ApiService.getBuses();
+      final buses = await ApiService.getBusesWithLocation();
       
       // Find bus assigned to user's route
       final routeBus = buses.firstWhere(
