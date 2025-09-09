@@ -5,6 +5,7 @@ import 'pages/advanced_tracker_page.dart';
 import 'pages/settings_page.dart';
 import 'pages/login_page.dart';
 import 'store/auth_store.dart';
+import 'constants/roles.dart';
 
 void main() {
   runApp(const BusTrackerApp());
@@ -106,51 +107,102 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
+  late final AuthStore _authStore;
+  List<NavigationItem> _navigationItems = [];
+  List<Widget> _screens = [];
 
-  void _onNavigate(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _authStore = AuthStore();
+    _updateNavigationBasedOnRole();
   }
 
-  List<Widget> get _screens => [
-    WelcomePage(onNavigate: _onNavigate),
-    const BusTrackingPage(),
-    const SettingsPage(),
-    const AdvancedTrackerPage(),
-  ];
+  void _updateNavigationBasedOnRole() {
+    final user = _authStore.user;
+    final roleId = user?['rol_id'] as int?;
+    
+    // Get navigation items based on user role
+    _navigationItems = getNavigationItems(roleId);
+    
+    // Create screens based on available navigation items
+    _screens = _navigationItems.map((item) {
+      switch (item.page) {
+        case 'home':
+          return WelcomePage(onNavigate: _onNavigate);
+        case 'bus_tracking':
+          return const BusTrackingPage();
+        case 'settings':
+          return const SettingsPage();
+        case 'tracker':
+          return const AdvancedTrackerPage();
+        default:
+          return WelcomePage(onNavigate: _onNavigate);
+      }
+    }).toList();
+    
+    // Ensure selected index is valid
+    if (_selectedIndex >= _screens.length) {
+      _selectedIndex = 0;
+    }
+  }
+
+  void _onNavigate(int index) {
+    if (index < _screens.length) {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
+  }
+
+  IconData _getIconData(String iconName) {
+    switch (iconName) {
+      case 'home':
+        return Icons.home;
+      case 'directions_bus':
+        return Icons.directions_bus;
+      case 'settings':
+        return Icons.settings;
+      case 'gps_fixed':
+        return Icons.gps_fixed;
+      default:
+        return Icons.help;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _screens[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.directions_bus),
-            label: 'Track Bus',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.gps_fixed),
-            label: 'Smart Track',
-          ),
-        ],
-      ),
+    return ListenableBuilder(
+      listenable: _authStore,
+      builder: (context, child) {
+        // Update navigation when auth state changes
+        _updateNavigationBasedOnRole();
+        
+        if (_screens.isEmpty) {
+          return const Scaffold(
+            body: Center(
+              child: Text('No access available for your role'),
+            ),
+          );
+        }
+
+        return Scaffold(
+          body: _screens[_selectedIndex],
+          bottomNavigationBar: _navigationItems.isNotEmpty ? BottomNavigationBar(
+            currentIndex: _selectedIndex,
+            onTap: (index) {
+              setState(() {
+                _selectedIndex = index;
+              });
+            },
+            type: BottomNavigationBarType.fixed,
+            items: _navigationItems.map((item) => BottomNavigationBarItem(
+              icon: Icon(_getIconData(item.icon)),
+              label: item.label,
+            )).toList(),
+          ) : null,
+        );
+      },
     );
   }
 }

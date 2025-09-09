@@ -4,6 +4,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:async';
 import '../services/api_service.dart';
+import '../store/auth_store.dart';
 
 class BusTrackingPage extends StatefulWidget {
   const BusTrackingPage({super.key});
@@ -208,9 +209,24 @@ class _BusTrackingPageState extends State<BusTrackingPage> {
                       ],
                     ),
                   ),
-                  IconButton(
-                    onPressed: _loadBuses,
-                    icon: const Icon(Icons.refresh, color: Colors.black87),
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed: _loadBuses,
+                        icon: const Icon(Icons.refresh, color: Colors.black87),
+                      ),
+                      IconButton(
+                        onPressed: () async {
+                          final authStore = AuthStore();
+                          await authStore.logout();
+                          if (context.mounted) {
+                            Navigator.of(context).pushReplacementNamed('/login');
+                          }
+                        },
+                        icon: const Icon(Icons.logout, color: Colors.black87),
+                        tooltip: 'Logout',
+                      ),
+                    ],
                   ),
                 ],
               ),

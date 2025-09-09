@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../components/menu_card.dart';
+import '../store/auth_store.dart';
 
 class WelcomePage extends StatelessWidget {
   final Function(int)? onNavigate;
@@ -26,6 +27,20 @@ class WelcomePage extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Theme.of(context).colorScheme.onPrimary,
         elevation: 2,
+        actions: [
+          // Logout button available for all users including drivers
+          IconButton(
+            onPressed: () async {
+              final authStore = AuthStore();
+              await authStore.logout();
+              if (context.mounted) {
+                Navigator.of(context).pushReplacementNamed('/login');
+              }
+            },
+            icon: const Icon(Icons.logout),
+            tooltip: 'Logout',
+          ),
+        ],
       ),
       body: Container(
         decoration: BoxDecoration(
