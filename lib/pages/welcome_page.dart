@@ -99,6 +99,11 @@ class _WelcomePageState extends State<WelcomePage> {
               
               const SizedBox(height: 16),
               
+              // User info display
+              _buildUserInfo(),
+              
+              const SizedBox(height: 16),
+              
               Text(
                 'Your smart school bus tracking companion',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
@@ -118,6 +123,117 @@ class _WelcomePageState extends State<WelcomePage> {
         ),
       ),
     );
+  }
+
+  Widget _buildUserInfo() {
+    final user = _authStore.user;
+    
+    if (user == null) {
+      return const SizedBox.shrink();
+    }
+
+    final name = user['nombre'] ?? '';
+    final lastName = user['apellido'] ?? '';
+    final login = user['login'] ?? '';
+    final roleName = user['rol'] ?? '';
+    final roleId = user['rol_id'] as int?;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.symmetric(horizontal: 8),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.9),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              // User avatar
+              Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary,
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Text(
+                    '${name.isNotEmpty ? name[0] : ''}${lastName.isNotEmpty ? lastName[0] : ''}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              // User details
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '$name $lastName',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'User: $login',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: _getRoleColor(roleId),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        roleName,
+                        style: const TextStyle(
+                          fontSize: 10,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Color _getRoleColor(int? roleId) {
+    switch (roleId) {
+      case 1: // Admin
+        return Colors.purple;
+      case 2: // Tracker
+        return Colors.green;
+      case 3: // Driver
+        return Colors.blue;
+      default:
+        return Colors.grey;
+    }
   }
 
   Widget _buildRoleBasedMenuCards() {
