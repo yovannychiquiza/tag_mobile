@@ -61,64 +61,66 @@ class _WelcomePageState extends State<WelcomePage> {
             ],
           ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            children: [
-              // Welcome Header
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
-                      blurRadius: 15,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              children: [
+                // Welcome Header
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                        blurRadius: 10,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    Icons.directions_bus,
+                    size: 60,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
                 ),
-                child: Icon(
-                  Icons.directions_bus,
-                  size: 80,
-                  color: Theme.of(context).colorScheme.onPrimary,
+                
+                const SizedBox(height: 16),
+                
+                Text(
+                  'Welcome to BusTracker! 🚌',
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-              ),
-              
-              const SizedBox(height: 32),
-              
-              Text(
-                'Welcome to BusTracker! 🚌',
-                style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.primary,
+                
+                const SizedBox(height: 8),
+                
+                // User info display
+                _buildUserInfo(),
+                
+                const SizedBox(height: 8),
+                
+                Text(
+                  'Your smart school bus tracking companion',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
-              ),
-              
-              const SizedBox(height: 16),
-              
-              // User info display
-              _buildUserInfo(),
-              
-              const SizedBox(height: 16),
-              
-              Text(
-                'Your smart school bus tracking companion',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                
+                const SizedBox(height: 16),
+                
+                // Menu Options - Role-based functional features
+                Expanded(
+                  child: _buildRoleBasedMenuCards(),
                 ),
-                textAlign: TextAlign.center,
-              ),
-              
-              const SizedBox(height: 40),
-              
-              // Menu Options - Role-based functional features
-              Expanded(
-                child: _buildRoleBasedMenuCards(),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -292,8 +294,11 @@ class _WelcomePageState extends State<WelcomePage> {
     
     return GridView.count(
       crossAxisCount: 2,
-      crossAxisSpacing: 16,
-      mainAxisSpacing: 16,
+      crossAxisSpacing: 10,
+      mainAxisSpacing: 10,
+      childAspectRatio: 1.4,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       children: menuCards,
     );
   }
