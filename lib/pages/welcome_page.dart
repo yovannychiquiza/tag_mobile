@@ -132,11 +132,11 @@ class _WelcomePageState extends State<WelcomePage> {
       return const SizedBox.shrink();
     }
 
-    final name = user['nombre'] ?? '';
-    final lastName = user['apellido'] ?? '';
+    final name = user['name'] ?? '';
+    final lastName = user['lastName'] ?? '';
     final login = user['login'] ?? '';
-    final roleName = user['rol'] ?? '';
-    final roleId = user['rol_id'] as int?;
+    final roleName = user['role'] ?? '';
+    final roleId = user['roleId'] as int?;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -238,7 +238,7 @@ class _WelcomePageState extends State<WelcomePage> {
 
   Widget _buildRoleBasedMenuCards() {
     final user = _authStore.user;
-    final roleId = user?['rol_id'] as int?;
+    final roleId = user?['roleId'] as int?;
     
     List<Widget> menuCards = [];
     

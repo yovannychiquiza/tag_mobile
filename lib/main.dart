@@ -120,7 +120,7 @@ class _MainScreenState extends State<MainScreen> {
 
   void _updateNavigationBasedOnRole() {
     final user = _authStore.user;
-    final roleId = user?['rol_id'] as int?;
+    final roleId = user?['roleId'] as int?;
     
     // Get navigation items based on user role
     _navigationItems = getNavigationItems(roleId);
