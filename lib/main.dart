@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'pages/welcome_page.dart';
 import 'pages/bus_tracking_page.dart';
 import 'pages/advanced_tracker_page.dart';
@@ -6,9 +7,27 @@ import 'pages/settings_page.dart';
 import 'pages/login_page.dart';
 import 'store/auth_store.dart';
 import 'constants/roles.dart';
+import 'services/background_location_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await _requestPermissions();
+  await BackgroundLocationService.initialize();
+  await BackgroundLocationService.start(); // Start background location updates
   runApp(const BusTrackerApp());
+}
+
+Future<void> _requestPermissions() async {
+  final status = await Permission.location.request();
+  if (status.isGranted) {
+    // For Android 10+ request background location
+    if (await Permission.locationAlways.isDenied) {
+      await Permission.locationAlways.request();
+    }
+  } else {
+    // Handle permission denied
+    debugPrint('Location permission denied');
+  }
 }
 
 class BusTrackerApp extends StatelessWidget {
