@@ -1,59 +1,40 @@
-import 'dart:isolate';
-import 'dart:ui';
-import 'package:background_locator_2/background_locator.dart';
-import 'package:background_locator_2/location_dto.dart';
-import 'package:background_locator_2/settings/android_settings.dart';
-import 'package:background_locator_2/settings/ios_settings.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 class BackgroundLocationService {
-  static const String isolateName = 'LocatorIsolate';
-  static ReceivePort port = ReceivePort();
+  static StreamSubscription<Position>? _positionStream;
 
   static Future<void> initialize() async {
     debugPrint('BackgroundLocationService: Initializing');
-    IsolateNameServer.registerPortWithName(port.sendPort, isolateName);
-    port.listen((dynamic data) {
-      debugPrint('BackgroundLocationService: Received data from isolate: $data');
-      // Handle data from background isolate if needed
-    });
-    await BackgroundLocator.initialize();
+    await Geolocator.requestPermission();
     debugPrint('BackgroundLocationService: Initialized');
   }
 
   static Future<void> start() async {
-    debugPrint('BackgroundLocationService: Starting location updates');
-    await BackgroundLocator.registerLocationUpdate(
-      callback,
-      androidSettings: AndroidSettings(
-        interval: 5,
-        distanceFilter: 0,
-        androidNotificationSettings: AndroidNotificationSettings(
-          notificationChannelName: 'Location tracking',
-          notificationTitle: 'Location Tracking',
-          notificationMsg: 'App is tracking your location in the background',
-          notificationBigMsg: 'App is tracking your location in the background',
-          notificationIcon: '@mipmap/ic_launcher', // Use your launcher icon or a custom one
-        ),
+    debugPrint('BackgroundLocationService: Starting foreground location service');
+    LocationSettings locationSettings = AndroidSettings(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 0,
+      intervalDuration: const Duration(seconds: 10),
+      foregroundNotificationConfig: const ForegroundNotificationConfig(
+        notificationText: 'App is tracking your location in the background',
+        notificationTitle: 'Location Tracking',
+        enableWakeLock: true,
       ),
-      iosSettings: IOSSettings(
-        distanceFilter: 0,
-      ),
-      autoStop: false,
     );
-    debugPrint('BackgroundLocationService: Location updates started');
-  }
-
-  @pragma('vm:entry-point')
-  static void callback(LocationDto locationDto) async {
-    debugPrint('BackgroundLocationService: Callback triggered');
-    debugPrint('Background location: \\${locationDto.latitude}, \\${locationDto.longitude}');
-    // You can add logic here to save/send location
+    _positionStream = Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position position) {
+      debugPrint('Background location: \\${position.latitude}, \\${position.longitude}');
+      // TODO: Handle location update (e.g., send to server, save locally, etc.)
+    });
+    debugPrint('BackgroundLocationService: Foreground location service started');
   }
 
   static Future<void> stop() async {
-    await BackgroundLocator.unRegisterLocationUpdate();
+    await _positionStream?.cancel();
+    debugPrint('BackgroundLocationService: Foreground location service stopped');
   }
 }
 
-// NOTE: On some Android devices, battery optimizations can kill background services. Instruct users to exclude the app from battery optimization settings for best results.
+// NOTE: For best results, instruct users to exclude the app from battery optimization settings.
+// Also, ensure you have FOREGROUND_SERVICE and ACCESS_BACKGROUND_LOCATION permissions in AndroidManifest.xml.
