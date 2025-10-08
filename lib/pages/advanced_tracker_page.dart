@@ -54,7 +54,6 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
     super.initState();
     _loadUserData();
     _getCurrentLocation();
-    _startRealTimeTracking();
   }
 
   @override
@@ -323,6 +322,10 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
       print('Failed to load user data: $error');
     } finally {
       setState(() => _loading = false);
+      // Start tracking after user data is loaded
+      if (_isTracking) {
+        _startRealTimeTracking();
+      }
     }
   }
 
