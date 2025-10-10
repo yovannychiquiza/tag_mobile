@@ -41,6 +41,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
   bool _isTracking = true;
   bool _notifications = false;
   bool _showRoute = true;
+  bool _centerOnBus = true;
   List<RoutePoint> _routePoints = [];
   UserSettings? _userSettings;
   bool _loading = true;
@@ -400,13 +401,19 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
       );
       
       if (routeBus.id != 0 && routeBus.currentLocation != null) {
+        final newBusPos = LatLng(routeBus.currentLocation!.latitude, routeBus.currentLocation!.longitude);
         setState(() {
           _assignedBus = routeBus;
           _busData = _busData.copyWith(
-            busPos: LatLng(routeBus.currentLocation!.latitude, routeBus.currentLocation!.longitude),
+            busPos: newBusPos,
             speed: routeBus.currentLocation!.speed ?? _busData.speed,
           );
         });
+
+        // Center map on bus if the toggle is enabled
+        if (_centerOnBus) {
+          _mapController.move(newBusPos, _mapController.camera.zoom);
+        }
       }
     } catch (error) {
       print('Failed to refresh bus location: $error');
@@ -866,13 +873,18 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
         ),
         ElevatedButton.icon(
           onPressed: () {
-            // TODO: Implement share functionality
+            setState(() {
+              _centerOnBus = !_centerOnBus;
+            });
+            if (_centerOnBus && _assignedBus?.currentLocation != null) {
+              _mapController.move(_busData.busPos, 15);
+            }
           },
-          icon: const Icon(Icons.share),
-          label: const Text('Share'),
+          icon: Icon(_centerOnBus ? Icons.my_location : Icons.location_disabled),
+          label: Text(_centerOnBus ? 'Centered' : 'Free Move'),
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.grey.shade300,
-            foregroundColor: Colors.black87,
+            backgroundColor: _centerOnBus ? Colors.orange : Colors.grey.shade300,
+            foregroundColor: _centerOnBus ? Colors.white : Colors.black87,
           ),
         ),
       ],
