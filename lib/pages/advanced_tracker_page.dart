@@ -999,23 +999,20 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                               width: isUserPickupStop ? 35 : 25,
                               height: isUserPickupStop ? 35 : 25,
                               point: LatLng(stop.latitude, stop.longitude),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: isUserPickupStop ? Colors.green : Colors.blue,
-                                  shape: BoxShape.circle,
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Colors.black26,
-                                      blurRadius: 4,
-                                      offset: Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: Icon(
-                                  Icons.location_on,
-                                  color: Colors.white,
-                                  size: isUserPickupStop ? 20 : 15,
-                                ),
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.circle,
+                                    color: isUserPickupStop ? Colors.orangeAccent : Colors.red,
+                                    size: isUserPickupStop ? 35 : 25,
+                                  ),
+                                  Icon(
+                                    Icons.bus_alert,
+                                    color: Colors.white,
+                                    size: isUserPickupStop ? 20 : 14,
+                                  ),
+                                ],
                               ),
                             );
                           }).toList(),
