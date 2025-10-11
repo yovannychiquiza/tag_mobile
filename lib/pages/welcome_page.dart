@@ -340,7 +340,7 @@ class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStat
       menuCards.add(
         _buildModernCard(
           icon: Icons.gps_fixed_rounded,
-          title: 'Advanced Tracker',
+          title: 'Smart Track',
           subtitle: 'Smart ETA & live alerts',
           gradient: const LinearGradient(
             colors: [Color(0xFF66BB6A), Color(0xFF43A047)],

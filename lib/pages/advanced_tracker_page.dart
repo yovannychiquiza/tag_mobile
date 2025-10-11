@@ -424,13 +424,13 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Theme.of(context).colorScheme.primary.withOpacity(0.1),
-              Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+              Color(0xFFE3F2FD), // Light blue
+              Color(0xFFF3E5F5), // Light purple
             ],
           ),
         ),
@@ -440,7 +440,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
             Container(
               padding: const EdgeInsets.only(top: 40, left: 16, right: 16, bottom: 16),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1),
+                color: Colors.white.withOpacity(0.3),
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(20),
                   bottomRight: Radius.circular(20),
@@ -456,7 +456,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                           color: Colors.yellow,
                           shape: BoxShape.circle,
                         ),
-                        child: const Text('🚌', style: TextStyle(fontSize: 24)),
+                        child: const Icon(Icons.directions_bus, color: Colors.black),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
@@ -602,18 +602,31 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
     required Color color,
   }) {
     return Card(
+      color: Colors.white,
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: color, size: 24),
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, color: color, size: 24),
+            ),
             const SizedBox(height: 8),
             Text(
               label,
               style: TextStyle(
                 fontSize: 12,
                 color: Colors.grey[600],
+                fontWeight: FontWeight.w500,
               ),
             ),
             const SizedBox(height: 4),
@@ -633,6 +646,10 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
 
   Widget _buildPersonalizedETACard() {
     return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
       color: Colors.orange.shade50,
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -732,7 +749,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
     required Color color,
   }) {
     return Card(
-      color: Colors.white.withOpacity(0.8),
+      color: Colors.white,
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
@@ -777,6 +794,10 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
 
   Widget _buildPersonalizationPrompt() {
     return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
       color: Colors.blue.shade50,
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -843,6 +864,10 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
           style: ElevatedButton.styleFrom(
             backgroundColor: _isTracking ? Colors.green : Colors.grey.shade300,
             foregroundColor: _isTracking ? Colors.white : Colors.black87,
+            elevation: 2,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         ),
         ElevatedButton.icon(
@@ -856,6 +881,10 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
           style: ElevatedButton.styleFrom(
             backgroundColor: _notifications ? Colors.blue : Colors.grey.shade300,
             foregroundColor: _notifications ? Colors.white : Colors.black87,
+            elevation: 2,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         ),
         ElevatedButton.icon(
@@ -869,6 +898,10 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
           style: ElevatedButton.styleFrom(
             backgroundColor: _showRoute ? Colors.purple : Colors.grey.shade300,
             foregroundColor: _showRoute ? Colors.white : Colors.black87,
+            elevation: 2,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         ),
         ElevatedButton.icon(
@@ -885,6 +918,10 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
           style: ElevatedButton.styleFrom(
             backgroundColor: _centerOnBus ? Colors.orange : Colors.grey.shade300,
             foregroundColor: _centerOnBus ? Colors.white : Colors.black87,
+            elevation: 2,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         ),
       ],
@@ -892,41 +929,55 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
   }
 
   Widget _buildMapContainer() {
-    return Card(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                const Text(
-                  'Live Map',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const Spacer(),
-                Container(
-                  width: 12,
-                  height: 12,
-                  decoration: const BoxDecoration(
-                    color: Colors.yellow,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                const Text(
-                  'Bus Location',
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
-                ),
-              ],
-            ),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x1A000000), // Fixed black with 10% opacity
+            blurRadius: 10,
+            offset: Offset(0, 4),
           ),
-          SizedBox(
-            height: 250,
-            child: FlutterMap(
+        ],
+      ),
+      clipBehavior: Clip.hardEdge,
+      child: Card(
+        color: Colors.white,
+        margin: EdgeInsets.zero,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  const Text(
+                    'Live Map',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const Spacer(),
+                  Container(
+                    width: 12,
+                    height: 12,
+                    decoration: const BoxDecoration(
+                      color: Colors.green,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  const Text(
+                    'Bus Location',
+                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 250,
+              child: FlutterMap(
               mapController: _mapController,
               options: MapOptions(
                 initialCenter: _userPos ?? _busData.busPos,
@@ -1024,7 +1075,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                     polylines: [
                       Polyline(
                         points: _routePoints.map((point) => LatLng(point.latitude, point.longitude)).toList(),
-                        color: Colors.purple.withOpacity(0.8),
+                        color: const Color(0xCC9C27B0), // Purple with 80% opacity
                         strokeWidth: 4,
                       ),
                     ],
@@ -1034,11 +1085,17 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
           ),
         ],
       ),
+      ),
     );
   }
 
   Widget _buildRouteTimeline() {
     return Card(
+      color: Colors.white,
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -1118,8 +1175,13 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
   }
 
   Widget _buildNoBusMessage() {
-    return const Card(
-      child: Padding(
+    return Card(
+      color: Colors.white,
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: const Padding(
         padding: EdgeInsets.all(16),
         child: Column(
           children: [
@@ -1143,8 +1205,13 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
   }
 
   Widget _buildLoadingMessage() {
-    return const Card(
-      child: Padding(
+    return Card(
+      color: Colors.white,
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: const Padding(
         padding: EdgeInsets.all(16),
         child: Column(
           children: [
