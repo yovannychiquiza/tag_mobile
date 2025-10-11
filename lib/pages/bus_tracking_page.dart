@@ -154,13 +154,13 @@ class _BusTrackingPageState extends State<BusTrackingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Theme.of(context).colorScheme.primary.withOpacity(0.1),
-              Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+              Color(0xFFE3F2FD), // Light blue
+              Color(0xFFF3E5F5), // Light purple
             ],
           ),
         ),
@@ -169,9 +169,9 @@ class _BusTrackingPageState extends State<BusTrackingPage> {
             // Header
             Container(
               padding: const EdgeInsets.only(top: 40, left: 16, right: 16, bottom: 16),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1),
-                borderRadius: const BorderRadius.only(
+              decoration: const BoxDecoration(
+                color: Color(0x1AFFFFFF),
+                borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(20),
                   bottomRight: Radius.circular(20),
                 ),
@@ -202,8 +202,9 @@ class _BusTrackingPageState extends State<BusTrackingPage> {
                         Text(
                           'Track buses with GPS and save locations',
                           style: TextStyle(
-                            color: Colors.black54,
+                            color: Color(0xFF616161),
                             fontSize: 14,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ],
@@ -257,12 +258,17 @@ class _BusTrackingPageState extends State<BusTrackingPage> {
                             final lastLocation = _lastLocations[bus.id];
 
                             return Card(
+                              color: Colors.white,
+                              elevation: 2,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
                               margin: const EdgeInsets.only(bottom: 16),
                               child: ExpansionTile(
                                 leading: Container(
                                   padding: const EdgeInsets.all(8),
                                   decoration: BoxDecoration(
-                                    color: isTracking ? Colors.green : Colors.grey,
+                                    color: isTracking ? Colors.green : const Color(0xFF9E9E9E),
                                     shape: BoxShape.circle,
                                   ),
                                   child: Icon(
@@ -273,20 +279,31 @@ class _BusTrackingPageState extends State<BusTrackingPage> {
                                 ),
                                 title: Text(
                                   'Bus ${bus.busNumber}',
-                                  style: const TextStyle(fontWeight: FontWeight.bold),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black87,
+                                    fontSize: 16,
+                                  ),
                                 ),
                                 subtitle: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     if (bus.licensePlate != null)
-                                      Text('License: ${bus.licensePlate}'),
+                                      Text(
+                                        'License: ${bus.licensePlate}',
+                                        style: const TextStyle(
+                                          color: Color(0xFF616161),
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
                                     Text(
-                                      isTracking 
-                                          ? 'Tracking every ${frequency}s' 
+                                      isTracking
+                                          ? 'Tracking every ${frequency}s'
                                           : 'Not tracking',
                                       style: TextStyle(
-                                        color: isTracking ? Colors.green : Colors.grey,
-                                        fontWeight: FontWeight.w500,
+                                        color: isTracking ? Colors.green : const Color(0xFF757575),
+                                        fontWeight: FontWeight.w600,
                                       ),
                                     ),
                                   ],
@@ -311,6 +328,9 @@ class _BusTrackingPageState extends State<BusTrackingPage> {
                                         }
                                       },
                                       activeColor: Colors.green,
+                                      activeTrackColor: const Color(0xFFA5D6A7),
+                                      inactiveThumbColor: Colors.white,
+                                      inactiveTrackColor: const Color(0xFFE0E0E0),
                                     ),
                                   ],
                                 ),
@@ -325,10 +345,23 @@ class _BusTrackingPageState extends State<BusTrackingPage> {
                                           children: [
                                             const Icon(Icons.timer, size: 20),
                                             const SizedBox(width: 8),
-                                            const Text('Tracking Frequency:'),
+                                            const Text(
+                                              'Tracking Frequency:',
+                                              style: TextStyle(
+                                                color: Colors.black87,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
                                             const SizedBox(width: 16),
                                             DropdownButton<int>(
                                               value: frequency,
+                                              dropdownColor: Colors.white,
+                                              style: const TextStyle(
+                                                color: Colors.black87,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w500,
+                                              ),
                                               items: [5, 10, 15, 30, 60].map((seconds) {
                                                 return DropdownMenuItem(
                                                   value: seconds,
@@ -358,9 +391,13 @@ class _BusTrackingPageState extends State<BusTrackingPage> {
                                                 child: Column(
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
-                                                    Text(
+                                                    const Text(
                                                       'Last Location:',
-                                                      style: TextStyle(fontWeight: FontWeight.w500),
+                                                      style: TextStyle(
+                                                        fontWeight: FontWeight.w600,
+                                                        color: Colors.black87,
+                                                        fontSize: 14,
+                                                      ),
                                                     ),
                                                     Text(
                                                       '${lastLocation.latitude.toStringAsFixed(6)}, ${lastLocation.longitude.toStringAsFixed(6)}',
@@ -454,11 +491,11 @@ class _BusTrackingPageState extends State<BusTrackingPage> {
               margin: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
-                boxShadow: [
+                boxShadow: const [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Color(0x1A000000),
                     blurRadius: 10,
-                    offset: const Offset(0, 4),
+                    offset: Offset(0, 4),
                   ),
                 ],
               ),

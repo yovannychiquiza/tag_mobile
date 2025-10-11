@@ -429,6 +429,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                       const SizedBox(height: 8),
                       DropdownButtonFormField<int>(
                         value: _selectedRouteId,
+                        dropdownColor: Colors.white,
                         style: const TextStyle(
                           color: Colors.black87,
                           fontSize: 16,
@@ -512,6 +513,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                         else
                           DropdownButtonFormField<int>(
                             value: _selectedPickupStopId,
+                            dropdownColor: Colors.white,
                             style: const TextStyle(
                               color: Colors.black87,
                               fontSize: 16,

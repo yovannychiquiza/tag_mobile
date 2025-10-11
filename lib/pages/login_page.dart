@@ -204,6 +204,11 @@ class _LoginPageState extends State<LoginPage> {
                           // Username Field
                           TextFormField(
                             controller: _usernameController,
+                            style: const TextStyle(
+                              color: Colors.black87,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
                             decoration: InputDecoration(
                               labelText: 'Username',
                               hintText: 'Enter your username',
@@ -236,6 +241,11 @@ class _LoginPageState extends State<LoginPage> {
                           TextFormField(
                             controller: _passwordController,
                             obscureText: _obscurePassword,
+                            style: const TextStyle(
+                              color: Colors.black87,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
                             decoration: InputDecoration(
                               labelText: 'Password',
                               hintText: 'Enter your password',
