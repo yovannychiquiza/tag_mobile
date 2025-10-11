@@ -224,6 +224,9 @@ class _MainScreenState extends State<MainScreen> {
               });
             },
             type: BottomNavigationBarType.fixed,
+            backgroundColor: Colors.white,
+            selectedItemColor: Colors.blue,
+            unselectedItemColor: Colors.grey,
             items: _navigationItems.map((item) => BottomNavigationBarItem(
               icon: Icon(_getIconData(item.icon)),
               label: item.label,

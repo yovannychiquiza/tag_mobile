@@ -240,7 +240,11 @@ class _BusTrackingPageState extends State<BusTrackingPage> {
                       ? const Center(
                           child: Text(
                             'No buses found',
-                            style: TextStyle(fontSize: 16, color: Colors.grey),
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Color(0xFF616161),
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         )
                       : ListView.builder(
@@ -360,12 +364,20 @@ class _BusTrackingPageState extends State<BusTrackingPage> {
                                                     ),
                                                     Text(
                                                       '${lastLocation.latitude.toStringAsFixed(6)}, ${lastLocation.longitude.toStringAsFixed(6)}',
-                                                      style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                                                      style: const TextStyle(
+                                                        fontSize: 12,
+                                                        color: Color(0xFF616161),
+                                                        fontWeight: FontWeight.w500,
+                                                      ),
                                                     ),
                                                     if (lastLocation.speed != null)
                                                       Text(
                                                         'Speed: ${lastLocation.speed!.toStringAsFixed(1)} km/h',
-                                                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                                                        style: const TextStyle(
+                                                          fontSize: 12,
+                                                          color: Color(0xFF616161),
+                                                          fontWeight: FontWeight.w500,
+                                                        ),
                                                       ),
                                                   ],
                                                 ),
@@ -374,12 +386,19 @@ class _BusTrackingPageState extends State<BusTrackingPage> {
                                           ),
                                         ] else ...[
                                           Row(
-                                            children: [
-                                              Icon(Icons.location_off, size: 20, color: Colors.grey),
-                                              const SizedBox(width: 8),
+                                            children: const [
+                                              Icon(
+                                                Icons.location_off,
+                                                size: 20,
+                                                color: Color(0xFF757575),
+                                              ),
+                                              SizedBox(width: 8),
                                               Text(
                                                 'No location data',
-                                                style: TextStyle(color: Colors.grey[600]),
+                                                style: TextStyle(
+                                                  color: Color(0xFF616161),
+                                                  fontWeight: FontWeight.w500,
+                                                ),
                                               ),
                                             ],
                                           ),

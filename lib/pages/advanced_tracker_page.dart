@@ -623,9 +623,9 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
             const SizedBox(height: 8),
             Text(
               label,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 12,
-                color: Colors.grey[600],
+                color: Color(0xFF616161), // Darker grey[700]
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -635,6 +635,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
+                color: Colors.black87,
               ),
               textAlign: TextAlign.center,
             ),
@@ -675,24 +676,24 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
               children: [
                 Expanded(
                   child: _buildPersonalizedCard(
-                    icon: Icons.home,
+                    icon: Icons.directions_walk,
                     label: 'Walking Distance',
                     value: '${_personalizedETA.homeToStop} km',
-                    subtitle: '${_personalizedETA.walkingTime} minutes to your pickup stop',
+                    subtitle: '${_personalizedETA.walkingTime} min walk to pickup stop',
                     color: Colors.orange,
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: _buildPersonalizedCard(
-                    icon: Icons.timer,
+                    icon: Icons.schedule,
                     label: 'Departure Time',
-                    value: _personalizedETA.needToLeaveIn > 0 
-                      ? '${_personalizedETA.needToLeaveIn} min' 
-                      : 'Leave Now!',
-                    subtitle: _personalizedETA.needToLeaveIn > 0 
-                      ? 'Leave home in ${_personalizedETA.needToLeaveIn} minutes' 
-                      : 'You should leave home now',
+                    value: _personalizedETA.needToLeaveIn > 0
+                      ? '${_personalizedETA.needToLeaveIn} min'
+                      : 'Now!',
+                    subtitle: _personalizedETA.needToLeaveIn > 0
+                      ? 'Leave in ${_personalizedETA.needToLeaveIn} min'
+                      : 'Leave home now',
                     color: Colors.red,
                   ),
                 ),
@@ -764,7 +765,8 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                     label,
                     style: const TextStyle(
                       fontSize: 12,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
                     ),
                   ),
                 ),
@@ -776,14 +778,16 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
+                color: Colors.black87,
               ),
             ),
             const SizedBox(height: 2),
             Text(
               subtitle,
-              style: TextStyle(
-                fontSize: 10,
-                color: Colors.grey[600],
+              style: const TextStyle(
+                fontSize: 11,
+                color: Color(0xFF424242), // Darker grey[800]
+                fontWeight: FontWeight.w600,
               ),
             ),
           ],
@@ -819,18 +823,22 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
               ],
             ),
             const SizedBox(height: 8),
-            Text(
+            const Text(
               'Configure your home location and pickup stop in Settings to get personalized travel times and alerts.',
-              style: TextStyle(color: Colors.blue.shade700),
+              style: TextStyle(
+                color: Color(0xFF1976D2), // Fixed blue[700]
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
             ),
             const SizedBox(height: 8),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (_userSettings?.homeLat == null)
-                  Text('• Set your home coordinates', style: TextStyle(fontSize: 12, color: Colors.blue.shade600)),
+                  const Text('• Set your home coordinates', style: TextStyle(fontSize: 12, color: Color(0xFF1E88E5), fontWeight: FontWeight.w500)),
                 if (_userSettings?.pickupStopId == null)
-                  Text('• Choose your pickup stop', style: TextStyle(fontSize: 12, color: Colors.blue.shade600)),
+                  const Text('• Choose your pickup stop', style: TextStyle(fontSize: 12, color: Color(0xFF1E88E5), fontWeight: FontWeight.w500)),
               ],
             ),
           ],
@@ -862,7 +870,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
           icon: Icon(_isTracking ? Icons.directions_bus : Icons.play_arrow),
           label: Text(_isTracking ? 'Tracking' : 'Start Track'),
           style: ElevatedButton.styleFrom(
-            backgroundColor: _isTracking ? Colors.green : Colors.grey.shade300,
+            backgroundColor: _isTracking ? Colors.green : const Color(0xFFE0E0E0),
             foregroundColor: _isTracking ? Colors.white : Colors.black87,
             elevation: 2,
             shape: RoundedRectangleBorder(
@@ -879,7 +887,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
           icon: const Icon(Icons.notifications),
           label: const Text('Notify'),
           style: ElevatedButton.styleFrom(
-            backgroundColor: _notifications ? Colors.blue : Colors.grey.shade300,
+            backgroundColor: _notifications ? Colors.blue : const Color(0xFFE0E0E0),
             foregroundColor: _notifications ? Colors.white : Colors.black87,
             elevation: 2,
             shape: RoundedRectangleBorder(
@@ -896,7 +904,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
           icon: const Icon(Icons.route),
           label: const Text('Route'),
           style: ElevatedButton.styleFrom(
-            backgroundColor: _showRoute ? Colors.purple : Colors.grey.shade300,
+            backgroundColor: _showRoute ? Colors.purple : const Color(0xFFE0E0E0),
             foregroundColor: _showRoute ? Colors.white : Colors.black87,
             elevation: 2,
             shape: RoundedRectangleBorder(
@@ -916,7 +924,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
           icon: Icon(_centerOnBus ? Icons.my_location : Icons.location_disabled),
           label: Text(_centerOnBus ? 'Centered' : 'Free Move'),
           style: ElevatedButton.styleFrom(
-            backgroundColor: _centerOnBus ? Colors.orange : Colors.grey.shade300,
+            backgroundColor: _centerOnBus ? Colors.orange : const Color(0xFFE0E0E0),
             foregroundColor: _centerOnBus ? Colors.white : Colors.black87,
             elevation: 2,
             shape: RoundedRectangleBorder(
@@ -956,6 +964,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
+                      color: Colors.black87,
                     ),
                   ),
                   const Spacer(),
@@ -970,7 +979,11 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                   const SizedBox(width: 8),
                   const Text(
                     'Bus Location',
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Color(0xFF616161),
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ],
               ),
@@ -1106,6 +1119,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
+                color: Colors.black87,
               ),
             ),
             const SizedBox(height: 12),
@@ -1126,9 +1140,9 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                           width: 16,
                           height: 16,
                           decoration: BoxDecoration(
-                            color: index == 0 ? Colors.yellow.shade400 : Colors.grey.shade200,
+                            color: index == 0 ? const Color(0xFFFFEE58) : const Color(0xFFEEEEEE),
                             border: Border.all(
-                              color: index == 0 ? Colors.yellow.shade500 : Colors.grey.shade300,
+                              color: index == 0 ? const Color(0xFFFDD835) : const Color(0xFFE0E0E0),
                               width: 2,
                             ),
                             shape: BoxShape.circle,
@@ -1147,11 +1161,12 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                                 ),
                               ),
                               if (index == 0)
-                                Text(
+                                const Text(
                                   'Current stop area',
                                   style: TextStyle(
                                     fontSize: 12,
-                                    color: Colors.yellow.shade600,
+                                    color: Color(0xFFFDD835), // Fixed yellow[600]
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                             ],
@@ -1159,9 +1174,10 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                         ),
                         Text(
                           '${7 + index}:${30 + (index * 5)} AM',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 12,
-                            color: Colors.grey[500],
+                            color: Color(0xFF757575), // Fixed grey[600]
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ],
@@ -1190,13 +1206,17 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
+                color: Colors.black87,
               ),
             ),
             SizedBox(height: 8),
             Text(
               'No bus is assigned to your route. Please contact administration to assign a bus to your route.',
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey),
+              style: TextStyle(
+                color: Color(0xFF616161),
+                fontSize: 14,
+              ),
             ),
           ],
         ),
@@ -1222,13 +1242,17 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
+                color: Colors.black87,
               ),
             ),
             SizedBox(height: 8),
             Text(
               'Please wait while we load your assigned route and bus information.',
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey),
+              style: TextStyle(
+                color: Color(0xFF616161),
+                fontSize: 14,
+              ),
             ),
           ],
         ),

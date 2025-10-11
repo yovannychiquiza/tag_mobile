@@ -254,8 +254,24 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(title),
-          content: Text(content),
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          title: Text(
+            title,
+            style: const TextStyle(
+              color: Colors.black87,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Text(
+            content,
+            style: const TextStyle(
+              color: Colors.black87,
+              fontSize: 16,
+            ),
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
@@ -375,6 +391,11 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                           children: [
                             const SizedBox(height: 10),
               Card(
+                color: Colors.white,
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
@@ -385,6 +406,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
+                          color: Colors.black87,
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -399,6 +421,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 16,
+                              color: Colors.black87,
                             ),
                           ),
                         ],
@@ -406,6 +429,11 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                       const SizedBox(height: 8),
                       DropdownButtonFormField<int>(
                         value: _selectedRouteId,
+                        style: const TextStyle(
+                          color: Colors.black87,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -415,24 +443,35 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                             vertical: 16,
                           ),
                         ),
-                        hint: const Text('No default route'),
+                        hint: const Text(
+                          'No default route',
+                          style: TextStyle(
+                            color: Color(0xFFBDBDBD),
+                            fontSize: 16,
+                          ),
+                        ),
                         items: _routes.map((route) {
                           return DropdownMenuItem<int>(
                             value: route.id,
                             child: Text(
                               '${route.name}${route.description != null ? ' - ${route.description}' : ''}',
                               overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: Colors.black87,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           );
                         }).toList(),
                         onChanged: _handleRouteChange,
                       ),
                       const SizedBox(height: 4),
-                      Text(
+                      const Text(
                         'This route will be automatically selected when you access the Route Path page.',
                         style: TextStyle(
                           fontSize: 12,
-                          color: Colors.grey[600],
+                          color: Color(0xFF757575), // Fixed grey[600]
                         ),
                       ),
                       
@@ -448,6 +487,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
+                                color: Colors.black87,
                               ),
                             ),
                           ],
@@ -463,12 +503,20 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                             ),
                             child: const Text(
                               'Loading pickup stops...',
-                              style: TextStyle(color: Colors.grey),
+                              style: TextStyle(
+                                color: Color(0xFF757575),
+                                fontSize: 14,
+                              ),
                             ),
                           )
                         else
                           DropdownButtonFormField<int>(
                             value: _selectedPickupStopId,
+                            style: const TextStyle(
+                              color: Colors.black87,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
@@ -478,7 +526,13 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                                 vertical: 16,
                               ),
                             ),
-                            hint: const Text('Select a pickup stop'),
+                            hint: const Text(
+                              'Select a pickup stop',
+                              style: TextStyle(
+                                color: Color(0xFFBDBDBD),
+                                fontSize: 16,
+                              ),
+                            ),
                             items: _routePoints
                                 .where((point) => point.isStop)
                                 .map((stop) {
@@ -487,6 +541,11 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                                 child: Text(
                                   'Stop ${stop.pointOrder ?? stop.id} - (${stop.latitude.toStringAsFixed(4)}, ${stop.longitude.toStringAsFixed(4)})',
                                   overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    color: Colors.black87,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
                               );
                             }).toList()..sort((a, b) => a.child.toString().compareTo(b.child.toString())),
@@ -497,11 +556,11 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                             },
                           ),
                         const SizedBox(height: 4),
-                        Text(
+                        const Text(
                           'Select the bus stop where you will be picked up. Only stops from the selected route are shown.',
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.grey[600],
+                            color: Color(0xFF757575), // Fixed grey[600]
                           ),
                         ),
                       ],
@@ -517,6 +576,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 16,
+                              color: Colors.black87,
                             ),
                           ),
                         ],
@@ -532,14 +592,24 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                                   'Latitude',
                                   style: TextStyle(
                                     fontSize: 12,
-                                    color: Colors.grey,
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                                 const SizedBox(height: 4),
                                 TextField(
                                   controller: _homeLatController,
+                                  style: const TextStyle(
+                                    color: Colors.black87,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                   decoration: InputDecoration(
                                     hintText: 'e.g., 45.2733',
+                                    hintStyle: const TextStyle(
+                                      color: Color(0xFFBDBDBD), // grey[400]
+                                      fontWeight: FontWeight.normal,
+                                    ),
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(8),
                                     ),
@@ -562,14 +632,24 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                                   'Longitude',
                                   style: TextStyle(
                                     fontSize: 12,
-                                    color: Colors.grey,
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                                 const SizedBox(height: 4),
                                 TextField(
                                   controller: _homeLngController,
+                                  style: const TextStyle(
+                                    color: Colors.black87,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                   decoration: InputDecoration(
                                     hintText: 'e.g., -66.0633',
+                                    hintStyle: const TextStyle(
+                                      color: Color(0xFFBDBDBD), // grey[400]
+                                      fontWeight: FontWeight.normal,
+                                    ),
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(8),
                                     ),
@@ -586,11 +666,11 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                         ],
                       ),
                       const SizedBox(height: 8),
-                      Text(
+                      const Text(
                         'Set your home coordinates for better route tracking and distance calculations.',
                         style: TextStyle(
                           fontSize: 12,
-                          color: Colors.grey[600],
+                          color: Color(0xFF757575), // Fixed grey[600]
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -602,8 +682,8 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                             icon: const Icon(Icons.my_location, size: 16),
                             label: const Text('Current Location'),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green[100],
-                              foregroundColor: Colors.green[700],
+                              backgroundColor: const Color(0xFFC8E6C9), // Fixed green[100]
+                              foregroundColor: const Color(0xFF388E3C), // Fixed green[700]
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 12,
                                 vertical: 8,
@@ -619,8 +699,8 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                             icon: const Icon(Icons.clear, size: 16),
                             label: const Text('Clear'),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.grey[100],
-                              foregroundColor: Colors.grey[600],
+                              backgroundColor: const Color(0xFFF5F5F5), // Fixed grey[100]
+                              foregroundColor: const Color(0xFF757575), // Fixed grey[600]
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 12,
                                 vertical: 8,
@@ -637,8 +717,8 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                         Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: Colors.blue[50],
-                            border: Border.all(color: Colors.blue[200]!),
+                            color: const Color(0xFFE3F2FD), // Fixed blue[50]
+                            border: Border.all(color: const Color(0xFF90CAF9)), // Fixed blue[200]
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Column(
@@ -659,7 +739,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                               if (_userSettings!.routeDescription != null)
                                 Text(
                                   ' - ${_userSettings!.routeDescription}',
-                                  style: TextStyle(color: Colors.blue[600]),
+                                  style: const TextStyle(color: Color(0xFF1E88E5)), // Fixed blue[600]
                                 ),
                               if (_userSettings!.pickupStopId != null) ...[
                                 const SizedBox(height: 4),
@@ -691,9 +771,9 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                                 const SizedBox(height: 8),
                                 Text(
                                   'Last updated: ${_userSettings!.updatedAt!.toLocal().toString().split('.')[0]}',
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 12,
-                                    color: Colors.blue[600],
+                                    color: Color(0xFF1E88E5), // Fixed blue[600]
                                   ),
                                 ),
                               ],
@@ -734,7 +814,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                               icon: const Icon(Icons.refresh),
                               label: const Text('Reset'),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.grey[600],
+                                backgroundColor: const Color(0xFF757575), // Fixed grey[600]
                                 foregroundColor: Colors.white,
                                 padding: const EdgeInsets.symmetric(vertical: 12),
                               ),
@@ -750,17 +830,27 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
               
               // Logout Section
               Card(
-                color: Colors.red[50],
+                color: const Color(0xFFFFEBEE), // Fixed red[50]
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 child: ListTile(
-                  leading: Icon(Icons.logout, color: Colors.red[700]),
-                  title: Text(
+                  leading: const Icon(Icons.logout, color: Color(0xFFD32F2F)), // Fixed red[700]
+                  title: const Text(
                     'Logout',
                     style: TextStyle(
-                      color: Colors.red[700],
+                      color: Color(0xFFD32F2F), // Fixed red[700]
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  subtitle: const Text('Sign out of your account'),
+                  subtitle: const Text(
+                    'Sign out of your account',
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 14,
+                    ),
+                  ),
                   onTap: () => _showLogoutDialog(context),
                 ),
                             ),
@@ -783,6 +873,10 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
           title: const Row(
             children: [
               Icon(Icons.logout, color: Colors.red),
@@ -790,7 +884,13 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
               Text('Logout'),
             ],
           ),
-          content: const Text('Are you sure you want to logout?'),
+          content: const Text(
+            'Are you sure you want to logout?',
+            style: TextStyle(
+              color: Colors.black87,
+              fontSize: 16,
+            ),
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
