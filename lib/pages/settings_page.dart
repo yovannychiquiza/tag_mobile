@@ -538,10 +538,11 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                             items: _routePoints
                                 .where((point) => point.isStop)
                                 .map((stop) {
+                              final stopName = stop.pointName ?? 'Stop ${stop.pointOrder ?? stop.id}';
                               return DropdownMenuItem<int>(
                                 value: stop.id,
                                 child: Text(
-                                  'Stop ${stop.pointOrder ?? stop.id} - (${stop.latitude.toStringAsFixed(4)}, ${stop.longitude.toStringAsFixed(4)})',
+                                  '$stopName - (${stop.latitude.toStringAsFixed(4)}, ${stop.longitude.toStringAsFixed(4)})',
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
                                     color: Colors.black87,
@@ -757,7 +758,8 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                                         isStop: true,
                                       ),
                                     );
-                                    return 'Stop ${stop.pointOrder ?? stop.id} at (${stop.latitude.toStringAsFixed(4)}, ${stop.longitude.toStringAsFixed(4)})';
+                                    final stopName = stop.pointName ?? 'Stop ${stop.pointOrder ?? stop.id}';
+                                    return '$stopName at (${stop.latitude.toStringAsFixed(4)}, ${stop.longitude.toStringAsFixed(4)})';
                                   })()}',
                                   style: const TextStyle(color: Colors.blue),
                                 ),

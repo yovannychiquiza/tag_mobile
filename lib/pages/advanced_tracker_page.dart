@@ -1168,7 +1168,6 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
             const SizedBox(height: 12),
             ..._routePoints
                 .where((point) => point.isStop)
-                .take(5)
                 .toList()
                 .asMap()
                 .entries
