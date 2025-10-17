@@ -46,6 +46,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
   UserSettings? _userSettings;
   bool _loading = true;
   Timer? _trackingTimer;
+  int? _selectedStopId;
 
   final MapController _mapController = MapController();
   final LatLng _defaultLocation = const LatLng(45.2733, -66.0633);
@@ -1059,24 +1060,64 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                           .where((point) => point.isStop)
                           .map((stop) {
                             final isUserPickupStop = stop.id == _userSettings?.pickupStopId;
+                            final isSelected = stop.id == _selectedStopId;
+                            final stopName = stop.pointName ?? 'Stop ${stop.pointOrder ?? stop.id}';
                             return Marker(
-                              width: isUserPickupStop ? 27 : 25,
-                              height: isUserPickupStop ? 27 : 25,
+                              width: isSelected ? 80 : (isUserPickupStop ? 27 : 25),
+                              height: isSelected ? 50 : (isUserPickupStop ? 27 : 25),
                               point: LatLng(stop.latitude, stop.longitude),
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.circle,
-                                    color: isUserPickupStop ?  const Color.fromARGB(255, 235, 165, 59) : const Color.fromARGB(255, 225, 112, 104),
-                                    size: isUserPickupStop ? 27 : 25,
-                                  ),
-                                  Icon(
-                                    Icons.directions_bus,
-                                    color: Colors.white,
-                                    size: isUserPickupStop ? 16 : 14,
-                                  ),
-                                ],
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _selectedStopId = isSelected ? null : stop.id;
+                                  });
+                                },
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.circle,
+                                          color: isUserPickupStop ?  const Color.fromARGB(255, 235, 165, 59) : const Color.fromARGB(255, 225, 112, 104),
+                                          size: isUserPickupStop ? 27 : 25,
+                                        ),
+                                        Icon(
+                                          Icons.directions_bus,
+                                          color: Colors.white,
+                                          size: isUserPickupStop ? 16 : 14,
+                                        ),
+                                      ],
+                                    ),
+                                    if (isSelected)
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(4),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: Colors.black26,
+                                              blurRadius: 2,
+                                              offset: Offset(0, 1),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Text(
+                                          stopName,
+                                          style: const TextStyle(
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black87,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                  ],
+                                ),
                               ),
                             );
                           }).toList(),
