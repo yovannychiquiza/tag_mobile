@@ -1292,7 +1292,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                                 Expanded(
                                   child: Container(
                                     width: 4,
-                                    color: const Color(0xFF4CAF50),
+                                    color: const Color.fromARGB(204, 107, 115, 201),
                                   ),
                                 ),
                             ],
@@ -1312,14 +1312,6 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                                     fontSize: 16,
                                     fontWeight: isClosest ? FontWeight.bold : FontWeight.w500,
                                     color: isClosest ? const Color.fromARGB(255, 76, 175, 80) : Colors.black87,
-                                  ),
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  '${stop.latitude.toStringAsFixed(4)}, ${stop.longitude.toStringAsFixed(4)}',
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    color: Color(0xFF757575),
                                   ),
                                 ),
                                 if (isClosest)
