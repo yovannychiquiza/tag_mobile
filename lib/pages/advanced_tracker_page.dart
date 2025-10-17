@@ -79,6 +79,29 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
     return degrees * pi / 180;
   }
 
+  // Get the closest route point to the bus
+  int? _getClosestPointToBus() {
+    if (_assignedBus?.currentLocation == null || _routePoints.isEmpty) {
+      return null;
+    }
+
+    final busLat = _assignedBus!.currentLocation!.latitude;
+    final busLng = _assignedBus!.currentLocation!.longitude;
+
+    RoutePoint? closestPoint;
+    double minDistance = double.infinity;
+
+    for (final point in _routePoints) {
+      final distance = _calculateDistance(busLat, busLng, point.latitude, point.longitude);
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestPoint = point;
+      }
+    }
+
+    return closestPoint?.id;
+  }
+
   // Calculate ETA to pickup stop using route points
   ETAResult _calculateETAToPickupStop(
     double busLat, 
@@ -538,9 +561,11 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
 
                     const SizedBox(height: 16),
 
-                    // Route Timeline
+                    // Route Schema (Vertical Line with Stops)
                     if (_showRoute && _routePoints.isNotEmpty)
-                      _buildRouteTimeline(),
+                      _buildRouteSchema(),
+
+                    const SizedBox(height: 16),
 
                     // No Bus Assigned Message
                     if (!_loading && _assignedBus == null)
@@ -1145,7 +1170,18 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
     );
   }
 
-  Widget _buildRouteTimeline() {
+  Widget _buildRouteSchema() {
+    final stops = _routePoints.where((point) => point.isStop).toList();
+    final closestPointId = _getClosestPointToBus();
+
+    // Sort stops by point order
+    stops.sort((a, b) {
+      if (a.pointOrder == null && b.pointOrder == null) return a.id.compareTo(b.id);
+      if (a.pointOrder == null) return 1;
+      if (b.pointOrder == null) return -1;
+      return a.pointOrder!.compareTo(b.pointOrder!);
+    });
+
     return Card(
       color: Colors.white,
       elevation: 2,
@@ -1158,74 +1194,140 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Route Timeline',
+              'Route Overview',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: Colors.black87,
               ),
             ),
-            const SizedBox(height: 12),
-            ..._routePoints
-                .where((point) => point.isStop)
-                .toList()
-                .asMap()
-                .entries
-                .map((entry) {
-                  final index = entry.key;
-                  final stop = entry.value;
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
+            const SizedBox(height: 16),
+            SizedBox(
+              height: 300,
+              child: ListView.builder(
+                itemCount: stops.length,
+                itemBuilder: (context, index) {
+                  final stop = stops[index];
+                  final isClosest = stop.id == closestPointId;
+                  final isUserPickup = stop.id == _userSettings?.pickupStopId;
+                  final isLast = index == stops.length - 1;
+                  final stopName = stop.pointName ?? 'Stop ${stop.pointOrder ?? stop.id}';
+
+                  return IntrinsicHeight(
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          width: 16,
-                          height: 16,
-                          decoration: BoxDecoration(
-                            color: index == 0 ? const Color(0xFFFFEE58) : const Color(0xFFEEEEEE),
-                            border: Border.all(
-                              color: index == 0 ? const Color(0xFFFDD835) : const Color(0xFFE0E0E0),
-                              width: 2,
-                            ),
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
+                        // Vertical line and circle
+                        SizedBox(
+                          width: 30,
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                stop.pointName ?? 'Stop ${stop.pointOrder ?? stop.id}',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  color: index == 0 ? Colors.yellow.shade700 : Colors.black87,
+                              Container(
+                                width: 20,
+                                height: 20,
+                                decoration: BoxDecoration(
+                                  color: isClosest
+                                      ? const Color.fromARGB(255, 76, 175, 80)
+                                      : (isUserPickup
+                                          ? const Color.fromARGB(255, 235, 165, 59)
+                                          : const Color.fromARGB(255, 225, 112, 104)),
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Colors.white,
+                                    width: 2,
+                                  ),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Colors.black12,
+                                      blurRadius: 2,
+                                      offset: Offset(0, 1),
+                                    ),
+                                  ],
+                                ),
+                                child: Icon(
+                                  isClosest ? Icons.directions_bus : Icons.circle,
+                                  color: Colors.white,
+                                  size: isClosest ? 12 : 8,
                                 ),
                               ),
-                              if (index == 0)
-                                const Text(
-                                  'Current stop area',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Color(0xFFFDD835), // Fixed yellow[600]
-                                    fontWeight: FontWeight.w600,
+                              if (!isLast)
+                                Expanded(
+                                  child: Container(
+                                    width: 4,
+                                    color: const Color(0xFF4CAF50),
                                   ),
                                 ),
                             ],
                           ),
                         ),
-                        Text(
-                          '${7 + index}:${30 + (index * 5)} AM',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Color(0xFF757575), // Fixed grey[600]
-                            fontWeight: FontWeight.w500,
+                        const SizedBox(width: 12),
+                        // Stop info
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  stopName,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: isClosest ? FontWeight.bold : FontWeight.w500,
+                                    color: isClosest ? const Color.fromARGB(255, 76, 175, 80) : Colors.black87,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  '${stop.latitude.toStringAsFixed(4)}, ${stop.longitude.toStringAsFixed(4)}',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Color(0xFF757575),
+                                  ),
+                                ),
+                                if (isClosest)
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 4),
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: const Color.fromARGB(255, 76, 175, 80),
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: const Text(
+                                      'Bus is near here',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                if (isUserPickup)
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 4),
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: const Color.fromARGB(255, 235, 165, 59),
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: const Text(
+                                      'Your pickup stop',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
                           ),
                         ),
                       ],
                     ),
                   );
-                }).toList(),
+                },
+              ),
+            ),
           ],
         ),
       ),
