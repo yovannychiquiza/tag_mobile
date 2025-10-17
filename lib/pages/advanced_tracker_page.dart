@@ -79,7 +79,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
     return degrees * pi / 180;
   }
 
-  // Get the closest route point to the bus
+  // Get the closest route point (stop) to the bus
   int? _getClosestPointToBus() {
     if (_assignedBus?.currentLocation == null || _routePoints.isEmpty) {
       return null;
@@ -88,10 +88,16 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
     final busLat = _assignedBus!.currentLocation!.latitude;
     final busLng = _assignedBus!.currentLocation!.longitude;
 
+    // Only check stops, not all route points
+    final stops = _routePoints.where((point) => point.isStop).toList();
+    if (stops.isEmpty) {
+      return null;
+    }
+
     RoutePoint? closestPoint;
     double minDistance = double.infinity;
 
-    for (final point in _routePoints) {
+    for (final point in stops) {
       final distance = _calculateDistance(busLat, busLng, point.latitude, point.longitude);
       if (distance < minDistance) {
         minDistance = distance;
@@ -1193,13 +1199,45 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Route Overview',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
+            Row(
+              children: [
+                const Text(
+                  'Route Overview',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                const Spacer(),
+                if (closestPointId != null)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 76, 175, 80),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.directions_bus,
+                          color: Colors.white,
+                          size: 14,
+                        ),
+                        SizedBox(width: 4),
+                        Text(
+                          'Bus tracking',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
             ),
             const SizedBox(height: 16),
             SizedBox(
