@@ -1063,8 +1063,8 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                             final isSelected = stop.id == _selectedStopId;
                             final stopName = stop.pointName ?? 'Stop ${stop.pointOrder ?? stop.id}';
                             return Marker(
-                              width: isSelected ? 80 : (isUserPickupStop ? 27 : 25),
-                              height: isSelected ? 50 : (isUserPickupStop ? 27 : 25),
+                              width: 80,
+                              height: 50,
                               point: LatLng(stop.latitude, stop.longitude),
                               child: GestureDetector(
                                 onTap: () {
@@ -1074,33 +1074,19 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                                 },
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    Stack(
-                                      alignment: Alignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.circle,
-                                          color: isUserPickupStop ?  const Color.fromARGB(255, 235, 165, 59) : const Color.fromARGB(255, 225, 112, 104),
-                                          size: isUserPickupStop ? 27 : 25,
-                                        ),
-                                        Icon(
-                                          Icons.directions_bus,
-                                          color: Colors.white,
-                                          size: isUserPickupStop ? 16 : 14,
-                                        ),
-                                      ],
-                                    ),
                                     if (isSelected)
                                       Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
                                         decoration: BoxDecoration(
                                           color: Colors.white,
                                           borderRadius: BorderRadius.circular(4),
                                           boxShadow: const [
                                             BoxShadow(
                                               color: Colors.black26,
-                                              blurRadius: 2,
-                                              offset: Offset(0, 1),
+                                              blurRadius: 3,
+                                              offset: Offset(0, 2),
                                             ),
                                           ],
                                         ),
@@ -1116,6 +1102,22 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
+                                    const SizedBox(height: 2),
+                                    Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.circle,
+                                          color: isUserPickupStop ?  const Color.fromARGB(255, 235, 165, 59) : const Color.fromARGB(255, 225, 112, 104),
+                                          size: isUserPickupStop ? 27 : 25,
+                                        ),
+                                        Icon(
+                                          Icons.directions_bus,
+                                          color: Colors.white,
+                                          size: isUserPickupStop ? 16 : 14,
+                                        ),
+                                      ],
+                                    ),
                                   ],
                                 ),
                               ),
