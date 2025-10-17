@@ -179,7 +179,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
     for (int i = currentPointIndex; i <= pickupStopIndex; i++) {
       final point = sortedPoints[i];
       if (point.isStop) {
-        nextStopName = 'Stop ${point.pointOrder ?? point.id}';
+        nextStopName = point.pointName ?? 'Stop ${point.pointOrder ?? point.id}';
         break;
       }
     }
@@ -1154,7 +1154,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Stop ${stop.pointOrder ?? stop.id}',
+                                stop.pointName ?? 'Stop ${stop.pointOrder ?? stop.id}',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w500,
                                   color: index == 0 ? Colors.yellow.shade700 : Colors.black87,

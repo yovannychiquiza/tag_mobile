@@ -68,6 +68,7 @@ class RoutePoint {
   final double latitude;
   final double longitude;
   final int? pointOrder;
+  final String? pointName;
   final bool isStop;
   final int? averageStopTime;
   final double? averageSpeed;
@@ -80,6 +81,7 @@ class RoutePoint {
     required this.latitude,
     required this.longitude,
     this.pointOrder,
+    this.pointName,
     required this.isStop,
     this.averageStopTime,
     this.averageSpeed,
@@ -94,6 +96,7 @@ class RoutePoint {
       latitude: json['Latitude'].toDouble(),
       longitude: json['Longitude'].toDouble(),
       pointOrder: json['PointOrder'],
+      pointName: json['PointName'],
       isStop: json['IsStop'] ?? false,
       averageStopTime: json['AverageStopTime'],
       averageSpeed: json['AverageSpeed']?.toDouble(),
