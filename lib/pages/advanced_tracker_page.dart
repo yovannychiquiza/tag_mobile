@@ -1252,60 +1252,72 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                   final stopName = stop.pointName ?? 'Stop ${stop.pointOrder ?? stop.id}';
 
                   return IntrinsicHeight(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Vertical line and circle
-                        SizedBox(
-                          width: 30,
-                          child: Column(
-                            children: [
-                              Container(
-                                width: 20,
-                                height: 20,
-                                decoration: BoxDecoration(
-                                  color: isClosest
-                                      ? const Color.fromARGB(255, 76, 175, 80)
-                                      : (isUserPickup
-                                          ? const Color.fromARGB(255, 235, 165, 59)
-                                          : const Color.fromARGB(255, 225, 112, 104)),
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: Colors.white,
-                                    width: 2,
-                                  ),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Colors.black12,
-                                      blurRadius: 2,
-                                      offset: Offset(0, 1),
-                                    ),
-                                  ],
-                                ),
-                                child: Icon(
-                                  isClosest ? Icons.directions_bus : Icons.circle,
-                                  color: Colors.white,
-                                  size: isClosest ? 12 : 8,
-                                ),
-                              ),
-                              if (!isLast)
-                                Expanded(
-                                  child: Container(
-                                    width: 4,
-                                    color: const Color.fromARGB(204, 107, 115, 201),
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        // Stop info
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 16),
+                    child: GestureDetector(
+                      onTap: () {
+                        // Center map on this stop
+                        _mapController.move(
+                          LatLng(stop.latitude, stop.longitude),
+                          16,
+                        );
+                        // Temporarily disable center on bus
+                        setState(() {
+                          _centerOnBus = false;
+                        });
+                      },
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Vertical line and circle
+                          SizedBox(
+                            width: 30,
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                Container(
+                                  width: 20,
+                                  height: 20,
+                                  decoration: BoxDecoration(
+                                    color: isClosest
+                                        ? const Color.fromARGB(255, 76, 175, 80)
+                                        : (isUserPickup
+                                            ? const Color.fromARGB(255, 235, 165, 59)
+                                            : const Color.fromARGB(255, 225, 112, 104)),
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: Colors.white,
+                                      width: 2,
+                                    ),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        color: Colors.black12,
+                                        blurRadius: 2,
+                                        offset: Offset(0, 1),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Icon(
+                                    isClosest ? Icons.directions_bus : Icons.circle,
+                                    color: Colors.white,
+                                    size: isClosest ? 12 : 8,
+                                  ),
+                                ),
+                                if (!isLast)
+                                  Expanded(
+                                    child: Container(
+                                      width: 4,
+                                      color: const Color.fromARGB(204, 107, 115, 201),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          // Stop info
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
                                 Text(
                                   stopName,
                                   style: TextStyle(
@@ -1348,11 +1360,12 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                                       ),
                                     ),
                                   ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   );
                 },
