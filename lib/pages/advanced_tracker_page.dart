@@ -1006,8 +1006,8 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                     // Show assigned bus
                     if (_assignedBus?.currentLocation != null)
                       Marker(
-                        width: 40,
-                        height: 40,
+                        width: 23,
+                        height: 23,
                         point: _busData.busPos,
                         child: Container(
                           decoration: const BoxDecoration(
@@ -1024,19 +1024,19 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                           child: const Icon(
                             Icons.directions_bus,
                             color: Colors.white,
-                            size: 24,
+                            size: 17,
                           ),
                         ),
                       ),
                     // Show home location if configured
                     if (_userSettings?.homeLat != null && _userSettings?.homeLng != null)
                       Marker(
-                        width: 35,
-                        height: 35,
+                        width: 23,
+                        height: 23,
                         point: LatLng(_userSettings!.homeLat!, _userSettings!.homeLng!),
                         child: Container(
                           decoration: const BoxDecoration(
-                            color: Colors.orange,
+                            color: Color.fromARGB(255, 235, 165, 59),
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
@@ -1049,7 +1049,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                           child: const Icon(
                             Icons.home,
                             color: Colors.white,
-                            size: 20,
+                            size: 17,
                           ),
                         ),
                       ),
@@ -1060,21 +1060,21 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                           .map((stop) {
                             final isUserPickupStop = stop.id == _userSettings?.pickupStopId;
                             return Marker(
-                              width: isUserPickupStop ? 35 : 25,
-                              height: isUserPickupStop ? 35 : 25,
+                              width: isUserPickupStop ? 27 : 25,
+                              height: isUserPickupStop ? 27 : 25,
                               point: LatLng(stop.latitude, stop.longitude),
                               child: Stack(
                                 alignment: Alignment.center,
                                 children: [
                                   Icon(
                                     Icons.circle,
-                                    color: isUserPickupStop ? Colors.orangeAccent : Colors.red,
-                                    size: isUserPickupStop ? 35 : 25,
+                                    color: isUserPickupStop ?  const Color.fromARGB(255, 235, 165, 59) : const Color.fromARGB(255, 225, 112, 104),
+                                    size: isUserPickupStop ? 27 : 25,
                                   ),
                                   Icon(
-                                    Icons.bus_alert,
+                                    Icons.directions_bus,
                                     color: Colors.white,
-                                    size: isUserPickupStop ? 20 : 14,
+                                    size: isUserPickupStop ? 16 : 14,
                                   ),
                                 ],
                               ),
@@ -1088,8 +1088,8 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                     polylines: [
                       Polyline(
                         points: _routePoints.map((point) => LatLng(point.latitude, point.longitude)).toList(),
-                        color: const Color(0xCC9C27B0), // Purple with 80% opacity
-                        strokeWidth: 4,
+                        color: const Color.fromARGB(204, 107, 115, 201), // Blue route line
+                        strokeWidth: 7,
                       ),
                     ],
                   ),
