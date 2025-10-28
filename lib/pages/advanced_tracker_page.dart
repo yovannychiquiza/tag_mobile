@@ -456,84 +456,85 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
     return Scaffold(
       body: Container(
         color: Colors.white,
-        child: Column(
-          children: [
-            // Header
-            Container(
-              padding: const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 16),
-              decoration: BoxDecoration(
-                color: AppColors.background,
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(20),
-                  bottomRight: Radius.circular(20),
-                ),
-              ),
-              child: Column(
-                children: [
-                  Row(
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                // Header
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppColors.background,
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(20),
+                      bottomRight: Radius.circular(20),
+                    ),
+                  ),
+                  child: Column(
                     children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: const BoxDecoration(
-                          color: AppColors.primary,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(Icons.directions_bus, color: Colors.white),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'BusTracker',
-                              style: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              '${_busData.busNumber} • ${_busData.route}',
-                              style: const TextStyle(
-                                color: Colors.black54,
-                                fontSize: 14,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
                       Row(
                         children: [
                           Container(
-                            width: 12,
-                            height: 12,
-                            decoration: BoxDecoration(
-                              color: _isTracking ? AppColors.secondary : Colors.grey,
+                            padding: const EdgeInsets.all(8),
+                            decoration: const BoxDecoration(
+                              color: AppColors.primary,
                               shape: BoxShape.circle,
                             ),
+                            child: const Icon(Icons.directions_bus, color: Colors.white),
                           ),
-                          const SizedBox(width: 8),
-                          Text(
-                            _isTracking ? 'Live' : 'Offline',
-                            style: const TextStyle(
-                              color: Colors.black87,
-                              fontSize: 12,
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'BusTracker',
+                                  style: TextStyle(
+                                    color: Colors.black87,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  '${_busData.busNumber} • ${_busData.route}',
+                                  style: const TextStyle(
+                                    color: Colors.black54,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
                             ),
+                          ),
+                          Row(
+                            children: [
+                              Container(
+                                width: 12,
+                                height: 12,
+                                decoration: BoxDecoration(
+                                  color: _isTracking ? AppColors.secondary : Colors.grey,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                _isTracking ? 'Live' : 'Offline',
+                                style: const TextStyle(
+                                  color: Colors.black87,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
+                ),
 
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
                     // Status Cards
                     _buildStatusCards(),
                     
@@ -575,8 +576,9 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                   ],
                 ),
               ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
