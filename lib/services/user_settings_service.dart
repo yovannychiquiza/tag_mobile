@@ -1,13 +1,10 @@
 import 'dart:convert';
-import 'auth_service.dart';
+import 'http_client.dart';
 
 class UserSettingsService {
   static Future<UserSettings?> getUserSettings() async {
     try {
-      final response = await AuthService.authenticatedRequest(
-        'GET',
-        '/user-settings',
-      );
+      final response = await HttpClient.get('/user-settings');
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -18,14 +15,13 @@ class UserSettingsService {
         throw Exception('Failed to load user settings');
       }
     } catch (e) {
-      throw Exception('Error fetching user settings: ${e.toString()}');
+      rethrow;
     }
   }
 
   static Future<void> updateUserSettings(UserSettingsUpdate settings) async {
     try {
-      final response = await AuthService.authenticatedRequest(
-        'PUT',
+      final response = await HttpClient.put(
         '/user-settings',
         body: settings.toJson(),
       );
@@ -34,22 +30,19 @@ class UserSettingsService {
         throw Exception('Failed to update user settings');
       }
     } catch (e) {
-      throw Exception('Error updating user settings: ${e.toString()}');
+      rethrow;
     }
   }
 
   static Future<void> deleteUserSettings() async {
     try {
-      final response = await AuthService.authenticatedRequest(
-        'DELETE',
-        '/user-settings',
-      );
+      final response = await HttpClient.delete('/user-settings');
 
       if (response.statusCode != 200 && response.statusCode != 404) {
         throw Exception('Failed to delete user settings');
       }
     } catch (e) {
-      throw Exception('Error deleting user settings: ${e.toString()}');
+      rethrow;
     }
   }
 }

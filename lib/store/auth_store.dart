@@ -80,4 +80,17 @@ class AuthStore extends ChangeNotifier {
     _user = null;
     notifyListeners();
   }
+
+  /// Force logout when session expires (called by HTTP client on 401)
+  Future<void> forceLogout() async {
+    try {
+      await AuthService.logout();
+    } finally {
+      _isAuthenticated = false;
+      _token = null;
+      _user = null;
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 }

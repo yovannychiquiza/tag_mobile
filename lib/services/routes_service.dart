@@ -1,13 +1,10 @@
 import 'dart:convert';
-import 'auth_service.dart';
+import 'http_client.dart';
 
 class RoutesService {
   static Future<List<RoutePath>> getRoutes() async {
     try {
-      final response = await AuthService.authenticatedRequest(
-        'GET',
-        '/routepath',
-      );
+      final response = await HttpClient.get('/routepath');
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
@@ -16,16 +13,13 @@ class RoutesService {
         throw Exception('Failed to load routes');
       }
     } catch (e) {
-      throw Exception('Error fetching routes: ${e.toString()}');
+      rethrow;
     }
   }
 
   static Future<List<RoutePoint>> getRoutePoints(int routeId) async {
     try {
-      final response = await AuthService.authenticatedRequest(
-        'GET',
-        '/routepath/$routeId/points',
-      );
+      final response = await HttpClient.get('/routepath/$routeId/points');
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
@@ -34,7 +28,7 @@ class RoutesService {
         throw Exception('Failed to load route points');
       }
     } catch (e) {
-      throw Exception('Error fetching route points: ${e.toString()}');
+      rethrow;
     }
   }
 }

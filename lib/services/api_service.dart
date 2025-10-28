@@ -1,24 +1,15 @@
 import 'dart:convert';
-import 'dart:io';
-import 'package:http/http.dart' as http;
 import '../config/app_config.dart';
+import 'http_client.dart';
 
 class ApiService {
   static String get baseUrl => AppConfig.baseUrl;
-  static const Map<String, String> headers = {
-    'Content-Type': 'application/json',
-  };
-
-  static Duration get timeout => Duration(seconds: AppConfig.apiTimeoutSeconds);
 
   // Get all buses
   static Future<List<Bus>> getBuses() async {
     try {
-      final response = await http.get(
-        Uri.parse('$baseUrl/bus'),
-        headers: headers,
-      ).timeout(timeout);
-      
+      final response = await HttpClient.get('/bus');
+
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         return data.map((json) => Bus.fromJson(json)).toList();
@@ -26,18 +17,15 @@ class ApiService {
         throw Exception('Failed to load buses');
       }
     } catch (e) {
-      throw Exception('Failed to connect to server: $e');
+      rethrow;
     }
   }
 
   // Get buses with current location
   static Future<List<Bus>> getBusesWithLocation() async {
     try {
-      final response = await http.get(
-        Uri.parse('$baseUrl/bus/with-location'),
-        headers: headers,
-      );
-      
+      final response = await HttpClient.get('/bus/with-location');
+
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         return data.map((json) => Bus.fromJson(json)).toList();
@@ -45,7 +33,7 @@ class ApiService {
         throw Exception('Failed to load buses with location');
       }
     } catch (e) {
-      throw Exception('Failed to connect to server: $e');
+      rethrow;
     }
   }
 
@@ -59,37 +47,33 @@ class ApiService {
     bool isActive = true,
   }) async {
     try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/bus/$busId/locations'),
-        headers: headers,
-        body: json.encode({
+      final response = await HttpClient.post(
+        '/bus/$busId/locations',
+        body: {
           'BusId': busId,
           'Latitude': latitude,
           'Longitude': longitude,
           'Speed': speed,
           'Direction': direction,
           'IsActive': isActive,
-        }),
+        },
       );
-      
+
       if (response.statusCode == 200 || response.statusCode == 201) {
         return BusLocation.fromJson(json.decode(response.body));
       } else {
         throw Exception('Failed to create bus location: ${response.body}');
       }
     } catch (e) {
-      throw Exception('Failed to save location: $e');
+      rethrow;
     }
   }
 
   // Get current bus location
   static Future<BusLocation?> getCurrentBusLocation(int busId) async {
     try {
-      final response = await http.get(
-        Uri.parse('$baseUrl/bus/$busId/current-location'),
-        headers: headers,
-      );
-      
+      final response = await HttpClient.get('/bus/$busId/current-location');
+
       if (response.statusCode == 200) {
         return BusLocation.fromJson(json.decode(response.body));
       } else if (response.statusCode == 404) {
@@ -98,18 +82,15 @@ class ApiService {
         throw Exception('Failed to get current location');
       }
     } catch (e) {
-      throw Exception('Failed to get location: $e');
+      rethrow;
     }
   }
 
   // Get bus locations history
   static Future<List<BusLocation>> getBusLocations(int busId) async {
     try {
-      final response = await http.get(
-        Uri.parse('$baseUrl/bus/$busId/locations'),
-        headers: headers,
-      );
-      
+      final response = await HttpClient.get('/bus/$busId/locations');
+
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         return data.map((json) => BusLocation.fromJson(json)).toList();
@@ -117,7 +98,7 @@ class ApiService {
         throw Exception('Failed to load bus locations');
       }
     } catch (e) {
-      throw Exception('Failed to get locations: $e');
+      rethrow;
     }
   }
 }

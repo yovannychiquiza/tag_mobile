@@ -8,13 +8,54 @@ import 'pages/login_page.dart';
 import 'store/auth_store.dart';
 import 'constants/roles.dart';
 import 'services/background_location_service.dart';
+import 'services/http_client.dart';
+
+// Global navigator key for showing session expiration dialog
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await _requestPermissions();
   await BackgroundLocationService.initialize();
   await BackgroundLocationService.start(); // Start background location updates
+
+  // Set up session expiration handler
+  _setupSessionExpirationHandler();
+
   runApp(const BusTrackerApp());
+}
+
+void _setupSessionExpirationHandler() {
+  HttpClient.onSessionExpired = () async {
+    final authStore = AuthStore();
+    await authStore.forceLogout();
+
+    // Show session expired dialog
+    final context = navigatorKey.currentContext;
+    if (context != null && context.mounted) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Session Expired'),
+            content: const Text(
+              'Your session has expired. Please log in again to continue.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  // Navigation will be handled automatically by AuthWrapper
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  };
 }
 
 Future<void> _requestPermissions() async {
@@ -36,6 +77,7 @@ class BusTrackerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey, // Use global key for session expiration dialog
       title: 'BusTracker Mobile',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
