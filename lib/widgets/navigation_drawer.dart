@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class NavigationDrawerWidget extends StatelessWidget {
   final List<dynamic> navigationItems;
   final Function(int) onSelectItem;
+  final VoidCallback onLogout;
 
   const NavigationDrawerWidget({
     super.key,
     required this.navigationItems,
     required this.onSelectItem,
+    required this.onLogout,
   });
 
   IconData _getIconData(String iconName) {
@@ -54,6 +56,12 @@ class NavigationDrawerWidget extends StatelessWidget {
               },
             );
           }).toList(),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.logout),
+            title: const Text('Logout'),
+            onTap: onLogout,
+          ),
         ],
       ),
     );

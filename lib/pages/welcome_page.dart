@@ -85,42 +85,19 @@ class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStat
               child: Column(
                 children: [
                   // Modern Header
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
+                  const Padding(
+                    padding: EdgeInsets.all(20.0),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Row(
-                          children: [
-                            Icon(Icons.directions_bus_rounded, size: 32, color: Colors.white),
-                            SizedBox(width: 12),
-                            Text(
-                              'BusTracker',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 24,
-                                color: Colors.white,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ],
-                        ),
-                        // Logout button
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white.withAlpha(51),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: IconButton(
-                            onPressed: () async {
-                              final authStore = AuthStore();
-                              await authStore.logout();
-                              if (context.mounted) {
-                                Navigator.of(context).pushReplacementNamed('/login');
-                              }
-                            },
-                            icon: const Icon(Icons.logout_rounded, color: Colors.white),
-                            tooltip: 'Logout',
+                        Icon(Icons.directions_bus_rounded, size: 32, color: Colors.white),
+                        SizedBox(width: 12),
+                        Text(
+                          'BusTracker',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24,
+                            color: Colors.white,
+                            letterSpacing: 0.5,
                           ),
                         ),
                       ],

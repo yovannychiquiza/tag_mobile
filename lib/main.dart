@@ -256,6 +256,12 @@ class _MainScreenState extends State<MainScreen> {
           drawer: NavigationDrawerWidget(
             navigationItems: _navigationItems,
             onSelectItem: _onSelectItem,
+            onLogout: () async {
+              await _authStore.logout();
+              if (mounted) {
+                Navigator.of(context).pushReplacementNamed('/login');
+              }
+            },
           ),
           body: _screens[_selectedIndex],
         );
