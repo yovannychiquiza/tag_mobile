@@ -7,6 +7,7 @@ import 'dart:math';
 import '../services/api_service.dart';
 import '../services/user_settings_service.dart';
 import '../services/routes_service.dart';
+import '../theme/app_colors.dart';
 
 class AdvancedTrackerPage extends StatefulWidget {
   const AdvancedTrackerPage({super.key});
@@ -26,7 +27,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
     route: 'Loading...',
     busPos: const LatLng(45.2733, -66.0633), // Default Saint John position
   );
-  
+
   PersonalizedETA _personalizedETA = PersonalizedETA(
     homeToStop: 0,
     busToStop: 0,
@@ -124,7 +125,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
       (point) => point.id == userPickupStopId && point.isStop,
       orElse: () => RoutePoint(id: 0, routePathId: 0, latitude: 0, longitude: 0, isStop: false),
     );
-    
+
     if (pickupStop.id == 0) {
       return ETAResult(distanceToStop: 0, etaMinutes: 0, nextStopName: 'Stop not found');
     }
@@ -243,7 +244,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
       (point) => point.id == userPickupStopId && point.isStop,
       orElse: () => RoutePoint(id: 0, routePathId: 0, latitude: 0, longitude: 0, isStop: false),
     );
-    
+
     if (pickupStop.id == 0) {
       return PersonalizedETAResult(
         homeToStop: 0, 
@@ -455,20 +456,13 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFFE3F2FD), // Light blue
-              Color(0xFFF3E5F5), // Light purple
-            ],
-          ),
+          gradient: AppColors.primaryGradient,
         ),
         child: Column(
           children: [
             // Header
             Container(
-              padding: const EdgeInsets.only(top: 40, left: 16, right: 16, bottom: 16),
+              padding: const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 16),
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.3),
                 borderRadius: const BorderRadius.only(
@@ -483,10 +477,10 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: const BoxDecoration(
-                          color: Colors.yellow,
+                          color: AppColors.primary,
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(Icons.directions_bus, color: Colors.black),
+                        child: const Icon(Icons.directions_bus, color: Colors.white),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
@@ -517,7 +511,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                             width: 12,
                             height: 12,
                             decoration: BoxDecoration(
-                              color: _isTracking ? Colors.green : Colors.grey,
+                              color: _isTracking ? AppColors.secondary : Colors.grey,
                               shape: BoxShape.circle,
                             ),
                           ),
@@ -603,13 +597,13 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
           icon: Icons.navigation,
           label: 'Distance',
           value: '${_busData.distance.toStringAsFixed(1)} km',
-          color: Colors.blue,
+          color: AppColors.primary,
         ),
         _buildStatusCard(
           icon: Icons.schedule,
           label: 'ETA',
           value: '${_busData.eta} min',
-          color: Colors.green,
+          color: AppColors.secondary,
         ),
         _buildStatusCard(
           icon: Icons.speed,
@@ -688,7 +682,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
-      color: Colors.orange.shade50,
+      color: AppColors.primary.withAlpha(26),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -696,14 +690,14 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
           children: [
             Row(
               children: [
-                Icon(Icons.home, color: Colors.orange.shade800, size: 20),
+                Icon(Icons.home, color: AppColors.primary, size: 20),
                 const SizedBox(width: 8),
                 Text(
                   'Personalized Travel Information',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Colors.orange.shade800,
+                    color: AppColors.primary,
                   ),
                 ),
               ],
@@ -717,7 +711,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                     label: 'Walking Distance',
                     value: '${_personalizedETA.homeToStop} km',
                     subtitle: '${_personalizedETA.walkingTime} min walk to pickup stop',
-                    color: Colors.orange,
+                    color: AppColors.primary,
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -736,7 +730,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                 ),
               ],
             ),
-            
+
             // Time-sensitive alerts
             if (_personalizedETA.needToLeaveIn <= 5 && _personalizedETA.needToLeaveIn > 0)
               Container(
@@ -755,7 +749,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                   ),
                 ),
               ),
-            
+
             if (_personalizedETA.needToLeaveIn <= 0 && _busData.eta > 0)
               Container(
                 margin: const EdgeInsets.only(top: 12),
@@ -839,7 +833,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
-      color: Colors.blue.shade50,
+      color: AppColors.primary.withAlpha(26),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -847,14 +841,14 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
           children: [
             Row(
               children: [
-                Icon(Icons.home, color: Colors.blue.shade800, size: 20),
+                Icon(Icons.home, color: AppColors.primary, size: 20),
                 const SizedBox(width: 8),
                 Text(
                   'Get Personalized Tracking',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Colors.blue.shade800,
+                    color: AppColors.primary,
                   ),
                 ),
               ],
@@ -863,7 +857,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
             const Text(
               'Configure your home location and pickup stop in Settings to get personalized travel times and alerts.',
               style: TextStyle(
-                color: Color(0xFF1976D2), // Fixed blue[700]
+                color: AppColors.primary,
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),
@@ -873,9 +867,9 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (_userSettings?.homeLat == null)
-                  const Text('• Set your home coordinates', style: TextStyle(fontSize: 12, color: Color(0xFF1E88E5), fontWeight: FontWeight.w500)),
+                  const Text('• Set your home coordinates', style: TextStyle(fontSize: 12, color: AppColors.primary, fontWeight: FontWeight.w500)),
                 if (_userSettings?.pickupStopId == null)
-                  const Text('• Choose your pickup stop', style: TextStyle(fontSize: 12, color: Color(0xFF1E88E5), fontWeight: FontWeight.w500)),
+                  const Text('• Choose your pickup stop', style: TextStyle(fontSize: 12, color: AppColors.primary, fontWeight: FontWeight.w500)),
               ],
             ),
           ],
@@ -907,7 +901,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
           icon: Icon(_isTracking ? Icons.directions_bus : Icons.play_arrow),
           label: Text(_isTracking ? 'Tracking' : 'Start Track'),
           style: ElevatedButton.styleFrom(
-            backgroundColor: _isTracking ? Colors.green : const Color(0xFFE0E0E0),
+            backgroundColor: _isTracking ? AppColors.secondary : const Color(0xFFE0E0E0),
             foregroundColor: _isTracking ? Colors.white : Colors.black87,
             elevation: 2,
             shape: RoundedRectangleBorder(
@@ -924,7 +918,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
           icon: const Icon(Icons.notifications),
           label: const Text('Notify'),
           style: ElevatedButton.styleFrom(
-            backgroundColor: _notifications ? Colors.blue : const Color(0xFFE0E0E0),
+            backgroundColor: _notifications ? AppColors.primary : const Color(0xFFE0E0E0),
             foregroundColor: _notifications ? Colors.white : Colors.black87,
             elevation: 2,
             shape: RoundedRectangleBorder(
@@ -961,7 +955,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
           icon: Icon(_centerOnBus ? Icons.my_location : Icons.location_disabled),
           label: Text(_centerOnBus ? 'Centered' : 'Free Move'),
           style: ElevatedButton.styleFrom(
-            backgroundColor: _centerOnBus ? Colors.orange : const Color(0xFFE0E0E0),
+            backgroundColor: _centerOnBus ? AppColors.primary : const Color(0xFFE0E0E0),
             foregroundColor: _centerOnBus ? Colors.white : Colors.black87,
             elevation: 2,
             shape: RoundedRectangleBorder(
@@ -1009,7 +1003,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                     width: 12,
                     height: 12,
                     decoration: const BoxDecoration(
-                      color: Colors.green,
+                      color: AppColors.secondary,
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -1048,7 +1042,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                         point: _busData.busPos,
                         child: Container(
                           decoration: const BoxDecoration(
-                            color: Colors.green,
+                            color: AppColors.secondary,
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
@@ -1073,7 +1067,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                         point: LatLng(_userSettings!.homeLat!, _userSettings!.homeLng!),
                         child: Container(
                           decoration: const BoxDecoration(
-                            color: Color.fromARGB(255, 235, 165, 59),
+                            color: AppColors.primary,
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
@@ -1144,7 +1138,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                                       children: [
                                         Icon(
                                           Icons.circle,
-                                          color: isUserPickupStop ?  const Color.fromARGB(255, 235, 165, 59) : const Color.fromARGB(255, 225, 112, 104),
+                                          color: isUserPickupStop ? AppColors.primary : Colors.red,
                                           size: isUserPickupStop ? 27 : 25,
                                         ),
                                         Icon(
@@ -1167,7 +1161,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                     polylines: [
                       Polyline(
                         points: _routePoints.map((point) => LatLng(point.latitude, point.longitude)).toList(),
-                        color: const Color.fromARGB(204, 107, 115, 201), // Blue route line
+                        color: AppColors.primary.withAlpha(204),
                         strokeWidth: 7,
                       ),
                     ],
@@ -1219,7 +1213,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 76, 175, 80),
+                      color: AppColors.secondary,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Row(
@@ -1282,10 +1276,10 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                                   height: 20,
                                   decoration: BoxDecoration(
                                     color: isClosest
-                                        ? const Color.fromARGB(255, 76, 175, 80)
+                                        ? AppColors.secondary
                                         : (isUserPickup
-                                            ? const Color.fromARGB(255, 235, 165, 59)
-                                            : const Color.fromARGB(255, 225, 112, 104)),
+                                            ? AppColors.primary
+                                            : Colors.red),
                                     shape: BoxShape.circle,
                                     border: Border.all(
                                       color: Colors.white,
@@ -1309,7 +1303,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                                   Expanded(
                                     child: Container(
                                       width: 4,
-                                      color: const Color.fromARGB(204, 107, 115, 201),
+                                      color: AppColors.primary.withAlpha(204),
                                     ),
                                   ),
                               ],
@@ -1328,7 +1322,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: isClosest ? FontWeight.bold : FontWeight.w500,
-                                    color: isClosest ? const Color.fromARGB(255, 76, 175, 80) : Colors.black87,
+                                    color: isClosest ? AppColors.secondary : Colors.black87,
                                   ),
                                 ),
                                 if (isClosest)
@@ -1336,7 +1330,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                                     margin: const EdgeInsets.only(top: 4),
                                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                     decoration: BoxDecoration(
-                                      color: const Color.fromARGB(255, 76, 175, 80),
+                                      color: AppColors.secondary,
                                       borderRadius: BorderRadius.circular(4),
                                     ),
                                     child: const Text(
@@ -1353,7 +1347,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                                     margin: const EdgeInsets.only(top: 4),
                                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                     decoration: BoxDecoration(
-                                      color: const Color.fromARGB(255, 235, 165, 59),
+                                      color: AppColors.primary,
                                       borderRadius: BorderRadius.circular(4),
                                     ),
                                     child: const Text(

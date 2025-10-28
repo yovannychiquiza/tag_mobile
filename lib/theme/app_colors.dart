@@ -7,8 +7,16 @@ class AppColors {
 
   static const Color secondary = Color(0xFF43A047); // Green
 
+  static const Color background = Color(0xFFFFF3E0); // Light orange background
+
   static const LinearGradient primaryGradient = LinearGradient(
     colors: [primaryLight, primaryDark],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+  );
+
+  static const LinearGradient lightPrimaryGradient = LinearGradient(
+    colors: [Color(0xFFFFF3E0), Color(0xFFFFFFFF)], // Light orange to white
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
   );
