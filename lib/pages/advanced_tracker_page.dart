@@ -455,16 +455,14 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppColors.primaryGradient,
-        ),
+        color: Colors.white,
         child: Column(
           children: [
             // Header
             Container(
               padding: const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 16),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.3),
+                color: AppColors.background,
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(20),
                   bottomRight: Radius.circular(20),
