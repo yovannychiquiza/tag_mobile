@@ -3,6 +3,7 @@ import 'package:geolocator/geolocator.dart';
 import '../store/auth_store.dart';
 import '../services/user_settings_service.dart';
 import '../services/routes_service.dart';
+import '../theme/app_colors.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -66,15 +67,15 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
   Future<void> _fetchData() async {
     try {
       setState(() => _loading = true);
-      
+
       final results = await Future.wait([
         UserSettingsService.getUserSettings(),
         RoutesService.getRoutes(),
       ]);
-      
+
       final userSettings = results[0] as UserSettings?;
       final routes = results[1] as List<RoutePath>;
-      
+
       setState(() {
         _userSettings = userSettings;
         _routes = routes;
@@ -83,7 +84,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
         _homeLatController.text = userSettings?.homeLat?.toString() ?? '';
         _homeLngController.text = userSettings?.homeLng?.toString() ?? '';
       });
-      
+
       if (_selectedRouteId != null) {
         await _fetchRoutePoints(_selectedRouteId!);
       }
@@ -113,7 +114,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
       _selectedPickupStopId = null;
       _routePoints = [];
     });
-    
+
     if (routeId != null) {
       await _fetchRoutePoints(routeId);
     }
@@ -122,26 +123,26 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
   String? _validateCoordinates() {
     final latText = _homeLatController.text.trim();
     final lngText = _homeLngController.text.trim();
-    
+
     if (latText.isNotEmpty && lngText.isNotEmpty) {
       final lat = double.tryParse(latText);
       final lng = double.tryParse(lngText);
-      
+
       if (lat == null || lng == null) {
         return 'Invalid coordinates. Please enter valid numbers.';
       }
-      
+
       if (lat < -90 || lat > 90) {
         return 'Latitude must be between -90 and 90 degrees.';
       }
-      
+
       if (lng < -180 || lng > 180) {
         return 'Longitude must be between -180 and 180 degrees.';
       }
     } else if (latText.isNotEmpty || lngText.isNotEmpty) {
       return 'Please provide both latitude and longitude, or leave both empty.';
     }
-    
+
     return null;
   }
 
@@ -154,10 +155,10 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
 
     try {
       setState(() => _saving = true);
-      
+
       final latText = _homeLatController.text.trim();
       final lngText = _homeLngController.text.trim();
-      
+
       await UserSettingsService.updateUserSettings(
         UserSettingsUpdate(
           routePathId: _selectedRouteId,
@@ -166,7 +167,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
           homeLng: lngText.isNotEmpty ? double.parse(lngText) : null,
         ),
       );
-      
+
       await _fetchData();
       _showSnackBar('Settings saved successfully!');
     } catch (e) {
@@ -181,13 +182,13 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
       'Reset Settings',
       'Are you sure you want to reset your settings to default? This will remove your home location, route selection, and pickup stop configuration.',
     );
-    
+
     if (!confirmed) return;
-    
+
     try {
       setState(() => _saving = true);
       await UserSettingsService.deleteUserSettings();
-      
+
       setState(() {
         _selectedRouteId = null;
         _selectedPickupStopId = null;
@@ -195,7 +196,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
         _homeLngController.clear();
         _routePoints = [];
       });
-      
+
       await _fetchData();
       _showSnackBar('Settings reset successfully!');
     } catch (e) {
@@ -221,7 +222,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
           return;
         }
       }
-      
+
       if (permission == LocationPermission.deniedForever) {
         _showSnackBar('Location permissions are permanently denied.', isError: true);
         return;
@@ -232,7 +233,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
         _homeLatController.text = position.latitude.toString();
         _homeLngController.text = position.longitude.toString();
       });
-      
+
       _showSnackBar('Current location set successfully!');
     } catch (e) {
       _showSnackBar('Error getting current location: ${e.toString()}', isError: true);
@@ -243,7 +244,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: isError ? Colors.red : Colors.green,
+        backgroundColor: isError ? Colors.red : AppColors.secondary,
         duration: Duration(seconds: isError ? 4 : 3),
       ),
     );
@@ -280,7 +281,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
             ElevatedButton(
               onPressed: () => Navigator.of(context).pop(true),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
+                backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white,
               ),
               child: const Text('Reset'),
@@ -297,15 +298,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
       return Scaffold(
         body: Container(
           decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color(0xFF4FC3F7),
-                Color(0xFF29B6F6),
-                Color(0xFF03A9F4),
-              ],
-            ),
+            gradient: AppColors.primaryGradient,
           ),
           child: const SafeArea(
             child: Center(
@@ -333,19 +326,10 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
       );
     }
 
-    // New Modern Design
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF4FC3F7),
-              Color(0xFF29B6F6),
-              Color(0xFF03A9F4),
-            ],
-          ),
+          gradient: AppColors.primaryGradient,
         ),
         child: SafeArea(
           child: FadeTransition(
@@ -390,474 +374,474 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(height: 10),
-              Card(
-                color: Colors.white,
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Default Route Configuration',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      
-                      // Route Selection
-                      const Row(
-                        children: [
-                          Icon(Icons.route, color: Colors.blue, size: 20),
-                          SizedBox(width: 8),
-                          Text(
-                            'Select Default Route',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                              color: Colors.black87,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      DropdownButtonFormField<int>(
-                        value: _selectedRouteId,
-                        dropdownColor: Colors.white,
-                        style: const TextStyle(
-                          color: Colors.black87,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 16,
-                          ),
-                        ),
-                        hint: const Text(
-                          'No default route',
-                          style: TextStyle(
-                            color: Color(0xFFBDBDBD),
-                            fontSize: 16,
-                          ),
-                        ),
-                        items: _routes.map((route) {
-                          return DropdownMenuItem<int>(
-                            value: route.id,
-                            child: Text(
-                              '${route.name}${route.description != null ? ' - ${route.description}' : ''}',
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                color: Colors.black87,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
+                            Card(
+                              color: Colors.white,
+                              elevation: 2,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
                               ),
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: _handleRouteChange,
-                      ),
-                      const SizedBox(height: 4),
-                      const Text(
-                        'This route will be automatically selected when you access the Route Path page.',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFF757575), // Fixed grey[600]
-                        ),
-                      ),
-                      
-                      // Pickup Stop Selection
-                      if (_selectedRouteId != null) ...[
-                        const SizedBox(height: 20),
-                        const Row(
-                          children: [
-                            Icon(Icons.location_on, color: Colors.green, size: 20),
-                            SizedBox(width: 8),
-                            Text(
-                              'Select Your Pickup Stop',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                                color: Colors.black87,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        if (_loadingRoutePoints)
-                          Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey[300]!),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: const Text(
-                              'Loading pickup stops...',
-                              style: TextStyle(
-                                color: Color(0xFF757575),
-                                fontSize: 14,
-                              ),
-                            ),
-                          )
-                        else
-                          DropdownButtonFormField<int>(
-                            isExpanded: true,
-                            value: _selectedPickupStopId,
-                            dropdownColor: Colors.white,
-                            style: const TextStyle(
-                              color: Colors.black87,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 16,
-                              ),
-                            ),
-                            hint: const Text(
-                              'Select a pickup stop',
-                              style: TextStyle(
-                                color: Color(0xFFBDBDBD),
-                                fontSize: 16,
-                              ),
-                            ),
-                            items: _routePoints
-                                .where((point) => point.isStop)
-                                .map((stop) {
-                              final stopName = stop.pointName ?? 'Stop ${stop.pointOrder ?? stop.id}';
-                              return DropdownMenuItem<int>(
-                                value: stop.id,
-                                child: Text(
-                                  stopName,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    color: Colors.black87,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      'Default Route Configuration',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 20),
+
+                                    // Route Selection
+                                    Row(
+                                      children: [
+                                        Icon(Icons.route, color: Theme.of(context).primaryColor, size: 20),
+                                        const SizedBox(width: 8),
+                                        const Text(
+                                          'Select Default Route',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 16,
+                                            color: Colors.black87,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8),
+                                    DropdownButtonFormField<int>(
+                                      value: _selectedRouteId,
+                                      dropdownColor: Colors.white,
+                                      style: const TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      decoration: InputDecoration(
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        contentPadding: const EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                          vertical: 16,
+                                        ),
+                                      ),
+                                      hint: const Text(
+                                        'No default route',
+                                        style: TextStyle(
+                                          color: Color(0xFFBDBDBD),
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      items: _routes.map((route) {
+                                        return DropdownMenuItem<int>(
+                                          value: route.id,
+                                          child: Text(
+                                            '${route.name}${route.description != null ? ' - ${route.description}' : ''}',
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              color: Colors.black87,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        );
+                                      }).toList(),
+                                      onChanged: _handleRouteChange,
+                                    ),
+                                    const SizedBox(height: 4),
+                                    const Text(
+                                      'This route will be automatically selected when you access the Route Path page.',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Color(0xFF757575),
+                                      ),
+                                    ),
+
+                                    // Pickup Stop Selection
+                                    if (_selectedRouteId != null) ...[
+                                      const SizedBox(height: 20),
+                                      Row(
+                                        children: [
+                                          Icon(Icons.location_on, color: AppColors.secondary, size: 20),
+                                          const SizedBox(width: 8),
+                                          const Text(
+                                            'Select Your Pickup Stop',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 16,
+                                              color: Colors.black87,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 8),
+                                      if (_loadingRoutePoints)
+                                        Container(
+                                          width: double.infinity,
+                                          padding: const EdgeInsets.all(16),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(color: Colors.grey[300]!),
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                          child: const Text(
+                                            'Loading pickup stops...',
+                                            style: TextStyle(
+                                              color: Color(0xFF757575),
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        )
+                                      else
+                                        DropdownButtonFormField<int>(
+                                          isExpanded: true,
+                                          value: _selectedPickupStopId,
+                                          dropdownColor: Colors.white,
+                                          style: const TextStyle(
+                                            color: Colors.black87,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(8),
+                                            ),
+                                            contentPadding: const EdgeInsets.symmetric(
+                                              horizontal: 12,
+                                              vertical: 16,
+                                            ),
+                                          ),
+                                          hint: const Text(
+                                            'Select a pickup stop',
+                                            style: TextStyle(
+                                              color: Color(0xFFBDBDBD),
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                          items: _routePoints
+                                              .where((point) => point.isStop)
+                                              .map((stop) {
+                                            final stopName = stop.pointName ?? 'Stop ${stop.pointOrder ?? stop.id}';
+                                            return DropdownMenuItem<int>(
+                                              value: stop.id,
+                                              child: Text(
+                                                stopName,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                  color: Colors.black87,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            );
+                                          }).toList()..sort((a, b) => a.child.toString().compareTo(b.child.toString())),
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _selectedPickupStopId = value;
+                                            });
+                                          },
+                                        ),
+                                      const SizedBox(height: 4),
+                                      const Text(
+                                        'Select the bus stop where you will be picked up. Only stops from the selected route are shown.',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Color(0xFF757575),
+                                        ),
+                                      ),
+                                    ],
+
+                                    // Home Location
+                                    const SizedBox(height: 20),
+                                    Row(
+                                      children: [
+                                        Icon(Icons.home, color: AppColors.primary, size: 20),
+                                        const SizedBox(width: 8),
+                                        const Text(
+                                          'Home Location (Optional)',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 16,
+                                            color: Colors.black87,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              const Text(
+                                                'Latitude',
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.black87,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              TextField(
+                                                controller: _homeLatController,
+                                                style: const TextStyle(
+                                                  color: Colors.black87,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                                decoration: InputDecoration(
+                                                  hintText: 'e.g., 45.2733',
+                                                  hintStyle: const TextStyle(
+                                                    color: Color(0xFFBDBDBD),
+                                                    fontWeight: FontWeight.normal,
+                                                  ),
+                                                  border: OutlineInputBorder(
+                                                    borderRadius: BorderRadius.circular(8),
+                                                  ),
+                                                  contentPadding: const EdgeInsets.symmetric(
+                                                    horizontal: 12,
+                                                    vertical: 16,
+                                                  ),
+                                                ),
+                                                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              const Text(
+                                                'Longitude',
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.black87,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              TextField(
+                                                controller: _homeLngController,
+                                                style: const TextStyle(
+                                                  color: Colors.black87,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                                decoration: InputDecoration(
+                                                  hintText: 'e.g., -66.0633',
+                                                  hintStyle: const TextStyle(
+                                                    color: Color(0xFFBDBDBD),
+                                                    fontWeight: FontWeight.normal,
+                                                  ),
+                                                  border: OutlineInputBorder(
+                                                    borderRadius: BorderRadius.circular(8),
+                                                  ),
+                                                  contentPadding: const EdgeInsets.symmetric(
+                                                    horizontal: 12,
+                                                    vertical: 16,
+                                                  ),
+                                                ),
+                                                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8),
+                                    const Text(
+                                      'Set your home coordinates for better route tracking and distance calculations.',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Color(0xFF757575),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Wrap(
+                                      spacing: 8,
+                                      children: [
+                                        ElevatedButton.icon(
+                                          onPressed: _getCurrentLocation,
+                                          icon: const Icon(Icons.my_location, size: 16),
+                                          label: const Text('Current Location'),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: AppColors.secondary.withAlpha(26),
+                                            foregroundColor: AppColors.secondary,
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 12,
+                                              vertical: 8,
+                                            ),
+                                            textStyle: const TextStyle(fontSize: 12),
+                                          ),
+                                        ),
+                                        ElevatedButton.icon(
+                                          onPressed: () {
+                                            _homeLatController.clear();
+                                            _homeLngController.clear();
+                                          },
+                                          icon: const Icon(Icons.clear, size: 16),
+                                          label: const Text('Clear'),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.grey[100],
+                                            foregroundColor: Colors.grey[600],
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 12,
+                                              vertical: 8,
+                                            ),
+                                            textStyle: const TextStyle(fontSize: 12),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+
+                                    // Current Settings Display
+                                    if (_userSettings?.routeName != null) ...[
+                                      const SizedBox(height: 20),
+                                      Container(
+                                        padding: const EdgeInsets.all(16),
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context).primaryColor.withAlpha(26),
+                                          border: Border.all(color: Theme.of(context).primaryColor),
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Current Settings:',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Theme.of(context).primaryColor,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Text(
+                                              'Default Route: ${_userSettings!.routeName}',
+                                              style: TextStyle(color: Theme.of(context).primaryColor),
+                                            ),
+                                            if (_userSettings!.routeDescription != null)
+                                              Text(
+                                                ' - ${_userSettings!.routeDescription}',
+                                                style: TextStyle(color: Theme.of(context).primaryColorDark),
+                                              ),
+                                            if (_userSettings!.pickupStopId != null) ...[
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                'Pickup Stop: ${(() {
+                                                  final stop = _routePoints.firstWhere(
+                                                    (p) => p.id == _userSettings!.pickupStopId,
+                                                    orElse: () => RoutePoint(
+                                                      id: _userSettings!.pickupStopId!,
+                                                      routePathId: 0,
+                                                      latitude: 0,
+                                                      longitude: 0,
+                                                      isStop: true,
+                                                    ),
+                                                  );
+                                                  final stopName = stop.pointName ?? 'Stop ${stop.pointOrder ?? stop.id}';
+                                                  return '$stopName at (${stop.latitude.toStringAsFixed(4)}, ${stop.longitude.toStringAsFixed(4)})';
+                                                })()}',
+                                                style: TextStyle(color: Theme.of(context).primaryColor),
+                                              ),
+                                            ],
+                                            if (_userSettings!.homeLat != null && _userSettings!.homeLng != null) ...[
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                'Home Location: (${_userSettings!.homeLat!.toStringAsFixed(4)}, ${_userSettings!.homeLng!.toStringAsFixed(4)})',
+                                                style: TextStyle(color: Theme.of(context).primaryColor),
+                                              ),
+                                            ],
+                                            if (_userSettings!.updatedAt != null) ...[
+                                              const SizedBox(height: 8),
+                                              Text(
+                                                'Last updated: ${_userSettings!.updatedAt!.toLocal().toString().split('.')[0]}',
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Theme.of(context).primaryColorDark,
+                                                ),
+                                              ),
+                                            ],
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+
+                                    // Action Buttons
+                                    const SizedBox(height: 20),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: ElevatedButton.icon(
+                                            onPressed: _saving ? null : _saveSettings,
+                                            icon: _saving
+                                                ? const SizedBox(
+                                                    width: 16,
+                                                    height: 16,
+                                                    child: CircularProgressIndicator(
+                                                      strokeWidth: 2,
+                                                      valueColor: AlwaysStoppedAnimation(Colors.white),
+                                                    ),
+                                                  )
+                                                : const Icon(Icons.save),
+                                            label: Text(_saving ? 'Saving...' : 'Save'),
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Theme.of(context).primaryColor,
+                                              foregroundColor: Colors.white,
+                                              padding: const EdgeInsets.symmetric(vertical: 12),
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: ElevatedButton.icon(
+                                            onPressed: _saving ? null : _resetSettings,
+                                            icon: const Icon(Icons.refresh),
+                                            label: const Text('Reset'),
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.grey[600],
+                                              foregroundColor: Colors.white,
+                                              padding: const EdgeInsets.symmetric(vertical: 12),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
-                              );
-                            }).toList()..sort((a, b) => a.child.toString().compareTo(b.child.toString())),
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedPickupStopId = value;
-                              });
-                            },
-                          ),
-                        const SizedBox(height: 4),
-                        const Text(
-                          'Select the bus stop where you will be picked up. Only stops from the selected route are shown.',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Color(0xFF757575), // Fixed grey[600]
-                          ),
-                        ),
-                      ],
-                      
-                      // Home Location
-                      const SizedBox(height: 20),
-                      const Row(
-                        children: [
-                          Icon(Icons.home, color: Colors.orange, size: 20),
-                          SizedBox(width: 8),
-                          Text(
-                            'Home Location (Optional)',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                              color: Colors.black87,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'Latitude',
+                            const SizedBox(height: 16),
+
+                            // Logout Section
+                            Card(
+                              color: Colors.red[50],
+                              elevation: 2,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: ListTile(
+                                leading: Icon(Icons.logout, color: Colors.red[700]),
+                                title: Text(
+                                  'Logout',
                                   style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.black87,
+                                    color: Colors.red[700],
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
-                                const SizedBox(height: 4),
-                                TextField(
-                                  controller: _homeLatController,
-                                  style: const TextStyle(
-                                    color: Colors.black87,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                  decoration: InputDecoration(
-                                    hintText: 'e.g., 45.2733',
-                                    hintStyle: const TextStyle(
-                                      color: Color(0xFFBDBDBD), // grey[400]
-                                      fontWeight: FontWeight.normal,
-                                    ),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 16,
-                                    ),
-                                  ),
-                                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'Longitude',
+                                subtitle: const Text(
+                                  'Sign out of your account',
                                   style: TextStyle(
-                                    fontSize: 12,
                                     color: Colors.black87,
-                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
                                   ),
                                 ),
-                                const SizedBox(height: 4),
-                                TextField(
-                                  controller: _homeLngController,
-                                  style: const TextStyle(
-                                    color: Colors.black87,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                  decoration: InputDecoration(
-                                    hintText: 'e.g., -66.0633',
-                                    hintStyle: const TextStyle(
-                                      color: Color(0xFFBDBDBD), // grey[400]
-                                      fontWeight: FontWeight.normal,
-                                    ),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 16,
-                                    ),
-                                  ),
-                                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        'Set your home coordinates for better route tracking and distance calculations.',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFF757575), // Fixed grey[600]
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 8,
-                        children: [
-                          ElevatedButton.icon(
-                            onPressed: _getCurrentLocation,
-                            icon: const Icon(Icons.my_location, size: 16),
-                            label: const Text('Current Location'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFFC8E6C9), // Fixed green[100]
-                              foregroundColor: const Color(0xFF388E3C), // Fixed green[700]
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 8,
+                                onTap: () => _showLogoutDialog(context),
                               ),
-                              textStyle: const TextStyle(fontSize: 12),
-                            ),
-                          ),
-                          ElevatedButton.icon(
-                            onPressed: () {
-                              _homeLatController.clear();
-                              _homeLngController.clear();
-                            },
-                            icon: const Icon(Icons.clear, size: 16),
-                            label: const Text('Clear'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFFF5F5F5), // Fixed grey[100]
-                              foregroundColor: const Color(0xFF757575), // Fixed grey[600]
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 8,
-                              ),
-                              textStyle: const TextStyle(fontSize: 12),
-                            ),
-                          ),
-                        ],
-                      ),
-                      
-                      // Current Settings Display
-                      if (_userSettings?.routeName != null) ...[
-                        const SizedBox(height: 20),
-                        Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFE3F2FD), // Fixed blue[50]
-                            border: Border.all(color: const Color(0xFF90CAF9)), // Fixed blue[200]
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Current Settings:',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.blue,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Default Route: ${_userSettings!.routeName}',
-                                style: const TextStyle(color: Colors.blue),
-                              ),
-                              if (_userSettings!.routeDescription != null)
-                                Text(
-                                  ' - ${_userSettings!.routeDescription}',
-                                  style: const TextStyle(color: Color(0xFF1E88E5)), // Fixed blue[600]
-                                ),
-                              if (_userSettings!.pickupStopId != null) ...[
-                                const SizedBox(height: 4),
-                                Text(
-                                  'Pickup Stop: ${(() {
-                                    final stop = _routePoints.firstWhere(
-                                      (p) => p.id == _userSettings!.pickupStopId,
-                                      orElse: () => RoutePoint(
-                                        id: _userSettings!.pickupStopId!,
-                                        routePathId: 0,
-                                        latitude: 0,
-                                        longitude: 0,
-                                        isStop: true,
-                                      ),
-                                    );
-                                    final stopName = stop.pointName ?? 'Stop ${stop.pointOrder ?? stop.id}';
-                                    return '$stopName at (${stop.latitude.toStringAsFixed(4)}, ${stop.longitude.toStringAsFixed(4)})';
-                                  })()}',
-                                  style: const TextStyle(color: Colors.blue),
-                                ),
-                              ],
-                              if (_userSettings!.homeLat != null && _userSettings!.homeLng != null) ...[
-                                const SizedBox(height: 4),
-                                Text(
-                                  'Home Location: (${_userSettings!.homeLat!.toStringAsFixed(4)}, ${_userSettings!.homeLng!.toStringAsFixed(4)})',
-                                  style: const TextStyle(color: Colors.blue),
-                                ),
-                              ],
-                              if (_userSettings!.updatedAt != null) ...[
-                                const SizedBox(height: 8),
-                                Text(
-                                  'Last updated: ${_userSettings!.updatedAt!.toLocal().toString().split('.')[0]}',
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    color: Color(0xFF1E88E5), // Fixed blue[600]
-                                  ),
-                                ),
-                              ],
-                            ],
-                          ),
-                        ),
-                      ],
-                      
-                      // Action Buttons
-                      const SizedBox(height: 20),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: ElevatedButton.icon(
-                              onPressed: _saving ? null : _saveSettings,
-                              icon: _saving 
-                                  ? const SizedBox(
-                                      width: 16,
-                                      height: 16,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        valueColor: AlwaysStoppedAnimation(Colors.white),
-                                      ),
-                                    )
-                                  : const Icon(Icons.save),
-                              label: Text(_saving ? 'Saving...' : 'Save'),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.blue,
-                                foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(vertical: 12),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: ElevatedButton.icon(
-                              onPressed: _saving ? null : _resetSettings,
-                              icon: const Icon(Icons.refresh),
-                              label: const Text('Reset'),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF757575), // Fixed grey[600]
-                                foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(vertical: 12),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              
-              // Logout Section
-              Card(
-                color: const Color(0xFFFFEBEE), // Fixed red[50]
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: ListTile(
-                  leading: const Icon(Icons.logout, color: Color(0xFFD32F2F)), // Fixed red[700]
-                  title: const Text(
-                    'Logout',
-                    style: TextStyle(
-                      color: Color(0xFFD32F2F), // Fixed red[700]
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  subtitle: const Text(
-                    'Sign out of your account',
-                    style: TextStyle(
-                      color: Colors.black87,
-                      fontSize: 14,
-                    ),
-                  ),
-                  onTap: () => _showLogoutDialog(context),
-                ),
                             ),
                           ],
                         ),

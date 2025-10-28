@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../store/auth_store.dart';
+import '../theme/app_colors.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -80,16 +81,8 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              const Color(0xFF4FC3F7), // Light blue
-              const Color(0xFF29B6F6), // Bright blue
-              const Color(0xFF03A9F4), // Sky blue
-            ],
-          ),
+        decoration: const BoxDecoration(
+          gradient: AppColors.primaryGradient,
         ),
         child: SafeArea(
           child: Center(
@@ -117,7 +110,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: const Icon(
                         Icons.directions_bus_rounded,
                         size: 70,
-                        color: Color(0xFF03A9F4),
+                        color: AppColors.primary,
                       ),
                     ),
                     const SizedBox(height: 24),
@@ -176,7 +169,7 @@ class _LoginPageState extends State<LoginPage> {
                             children: [
                               Icon(
                                 Icons.waving_hand,
-                                color: Color(0xFF03A9F4),
+                                color: AppColors.primary,
                                 size: 28,
                               ),
                               SizedBox(width: 8),
@@ -212,7 +205,7 @@ class _LoginPageState extends State<LoginPage> {
                             decoration: InputDecoration(
                               labelText: 'Username',
                               hintText: 'Enter your username',
-                              prefixIcon: const Icon(Icons.person_outline, color: Color(0xFF03A9F4)),
+                              prefixIcon: const Icon(Icons.person_outline, color: AppColors.primary),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(16),
                                 borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
@@ -223,7 +216,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(16),
-                                borderSide: const BorderSide(color: Color(0xFF03A9F4), width: 2),
+                                borderSide: const BorderSide(color: AppColors.primary, width: 2),
                               ),
                               filled: true,
                               fillColor: const Color(0xFFF5F5F5),
@@ -249,7 +242,7 @@ class _LoginPageState extends State<LoginPage> {
                             decoration: InputDecoration(
                               labelText: 'Password',
                               hintText: 'Enter your password',
-                              prefixIcon: const Icon(Icons.lock_outline, color: Color(0xFF03A9F4)),
+                              prefixIcon: const Icon(Icons.lock_outline, color: AppColors.primary),
                               suffixIcon: IconButton(
                                 icon: Icon(
                                   _obscurePassword
@@ -273,7 +266,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(16),
-                                borderSide: const BorderSide(color: Color(0xFF03A9F4), width: 2),
+                                borderSide: const BorderSide(color: AppColors.primary, width: 2),
                               ),
                               filled: true,
                               fillColor: const Color(0xFFF5F5F5),
@@ -291,16 +284,11 @@ class _LoginPageState extends State<LoginPage> {
                           Container(
                             height: 56,
                             decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [
-                                  Color(0xFF4FC3F7),
-                                  Color(0xFF03A9F4),
-                                ],
-                              ),
+                              gradient: AppColors.primaryGradient,
                               borderRadius: BorderRadius.circular(16),
                               boxShadow: [
                                 BoxShadow(
-                                  color: const Color(0xFF03A9F4).withOpacity(0.4),
+                                  color: AppColors.primary.withOpacity(0.4),
                                   blurRadius: 12,
                                   offset: const Offset(0, 6),
                                 ),

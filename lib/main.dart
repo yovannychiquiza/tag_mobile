@@ -9,7 +9,8 @@ import 'store/auth_store.dart';
 import 'constants/roles.dart';
 import 'services/background_location_service.dart';
 import 'services/http_client.dart';
-import 'widgets/navigation_drawer.dart'; // Import the new widget
+import 'widgets/navigation_drawer.dart';
+import 'theme/app_colors.dart'; // Import the new AppColors
 
 // Global navigator key for showing session expiration dialog
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -78,18 +79,18 @@ class BusTrackerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      navigatorKey: navigatorKey, // Use global key for session expiration dialog
+      navigatorKey: navigatorKey,
       title: 'BusTracker Mobile',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blue,
+          seedColor: AppColors.primary,
           brightness: Brightness.light,
         ),
         useMaterial3: true,
       ),
       darkTheme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blue,
+          seedColor: AppColors.primary,
           brightness: Brightness.dark,
         ),
         useMaterial3: true,
@@ -184,10 +185,8 @@ class _MainScreenState extends State<MainScreen> {
     final user = _authStore.user;
     final roleId = user?['roleId'] as int?;
     
-    // Get navigation items based on user role
     _navigationItems = getNavigationItems(roleId);
     
-    // Create screens based on available navigation items
     _screens = _navigationItems.map((item) {
       switch (item.page) {
         case 'home':
@@ -203,20 +202,17 @@ class _MainScreenState extends State<MainScreen> {
       }
     }).toList();
     
-    // Ensure selected index is valid
     if (_selectedIndex >= _screens.length) {
       _selectedIndex = 0;
     }
   }
 
   void _onNavigate(int originalIndex) {
-    // Find the navigation item with the original index
     final targetItem = _navigationItems.firstWhere(
       (item) => item.index == originalIndex,
       orElse: () => _navigationItems.first,
     );
     
-    // Find the actual screen index in the current navigation items
     final screenIndex = _navigationItems.indexOf(targetItem);
     
     if (screenIndex >= 0 && screenIndex < _screens.length) {
@@ -237,7 +233,6 @@ class _MainScreenState extends State<MainScreen> {
     return ListenableBuilder(
       listenable: _authStore,
       builder: (context, child) {
-        // Update navigation when auth state changes
         _updateNavigationBasedOnRole();
         
         if (_screens.isEmpty) {
@@ -251,7 +246,7 @@ class _MainScreenState extends State<MainScreen> {
         return Scaffold(
           appBar: AppBar(
             title: Text(_navigationItems[_selectedIndex].label),
-            backgroundColor: Colors.blue,
+            backgroundColor: AppColors.primary,
           ),
           drawer: NavigationDrawerWidget(
             navigationItems: _navigationItems,

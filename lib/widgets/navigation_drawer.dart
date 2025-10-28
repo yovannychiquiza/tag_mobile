@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/app_colors.dart';
 
 class NavigationDrawerWidget extends StatelessWidget {
   final List<dynamic> navigationItems;
@@ -35,7 +36,7 @@ class NavigationDrawerWidget extends StatelessWidget {
         children: [
           const DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.blue,
+              color: AppColors.primary,
             ),
             child: Text(
               'Bus Tracker',

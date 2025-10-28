@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../store/auth_store.dart';
 import '../constants/roles.dart';
+import '../theme/app_colors.dart';
 
 class WelcomePage extends StatefulWidget {
   final Function(int)? onNavigate;
-  
+
   const WelcomePage({super.key, this.onNavigate});
 
   @override
@@ -67,15 +68,7 @@ class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStat
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF4FC3F7),
-              Color(0xFF29B6F6),
-              Color(0xFF03A9F4),
-            ],
-          ),
+          gradient: AppColors.primaryGradient,
         ),
         child: SafeArea(
           child: FadeTransition(
@@ -149,13 +142,13 @@ class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStat
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFF03A9F4).withAlpha(26),
+                                    color: AppColors.primary.withAlpha(26),
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Text(
                                     _version,
                                     style: const TextStyle(
-                                      color: Color(0xFF03A9F4),
+                                      color: AppColors.primary,
                                       fontSize: 12,
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -179,7 +172,7 @@ class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStat
 
   Widget _buildModernUserInfo() {
     final user = _authStore.user;
-    
+
     if (user == null) {
       return const SizedBox.shrink();
     }
@@ -209,13 +202,11 @@ class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStat
             width: 60,
             height: 60,
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF4FC3F7), Color(0xFF03A9F4)],
-              ),
+              gradient: AppColors.primaryGradient,
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF03A9F4).withAlpha(51),
+                  color: AppColors.primary.withAlpha(51),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -283,9 +274,9 @@ class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStat
       case 1: // Admin
         return Colors.purple;
       case 2: // Tracker
-        return Colors.green;
+        return AppColors.secondary;
       case 3: // Driver
-        return Colors.blue;
+        return AppColors.primary;
       default:
         return Colors.grey;
     }
@@ -294,9 +285,9 @@ class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStat
   Widget _buildModernMenuCards() {
     final user = _authStore.user;
     final roleId = user?['roleId'] as int?;
-    
+
     List<Widget> menuCards = [];
-    
+
     // Show Track Bus for drivers
     if (hasPageAccess(roleId, 'bus_tracking')) {
       menuCards.add(
@@ -304,9 +295,7 @@ class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStat
           icon: Icons.directions_bus_rounded,
           title: 'Track Bus',
           subtitle: 'Real-time location tracking',
-          gradient: const LinearGradient(
-            colors: [Color(0xFF42A5F5), Color(0xFF1E88E5)],
-          ),
+          gradient: AppColors.primaryGradient,
           onTap: () => widget.onNavigate?.call(1),
         ),
       );
