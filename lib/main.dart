@@ -9,6 +9,7 @@ import 'store/auth_store.dart';
 import 'constants/roles.dart';
 import 'services/background_location_service.dart';
 import 'services/http_client.dart';
+import 'widgets/navigation_drawer.dart'; // Import the new widget
 
 // Global navigator key for showing session expiration dialog
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -225,19 +226,10 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  IconData _getIconData(String iconName) {
-    switch (iconName) {
-      case 'home':
-        return Icons.home;
-      case 'directions_bus':
-        return Icons.directions_bus;
-      case 'settings':
-        return Icons.settings;
-      case 'gps_fixed':
-        return Icons.gps_fixed;
-      default:
-        return Icons.help;
-    }
+  void _onSelectItem(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 
   @override
@@ -257,23 +249,15 @@ class _MainScreenState extends State<MainScreen> {
         }
 
         return Scaffold(
+          appBar: AppBar(
+            title: Text(_navigationItems[_selectedIndex].label),
+            backgroundColor: Colors.blue,
+          ),
+          drawer: NavigationDrawerWidget(
+            navigationItems: _navigationItems,
+            onSelectItem: _onSelectItem,
+          ),
           body: _screens[_selectedIndex],
-          bottomNavigationBar: _navigationItems.isNotEmpty ? BottomNavigationBar(
-            currentIndex: _selectedIndex,
-            onTap: (index) {
-              setState(() {
-                _selectedIndex = index;
-              });
-            },
-            type: BottomNavigationBarType.fixed,
-            backgroundColor: Colors.white,
-            selectedItemColor: Colors.blue,
-            unselectedItemColor: Colors.grey,
-            items: _navigationItems.map((item) => BottomNavigationBarItem(
-              icon: Icon(_getIconData(item.icon)),
-              label: item.label,
-            )).toList(),
-          ) : null,
         );
       },
     );
