@@ -512,6 +512,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                           )
                         else
                           DropdownButtonFormField<int>(
+                            isExpanded: true,
                             value: _selectedPickupStopId,
                             dropdownColor: Colors.white,
                             style: const TextStyle(
@@ -542,7 +543,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                               return DropdownMenuItem<int>(
                                 value: stop.id,
                                 child: Text(
-                                  '$stopName - (${stop.latitude.toStringAsFixed(4)}, ${stop.longitude.toStringAsFixed(4)})',
+                                  stopName,
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
                                     color: Colors.black87,
@@ -803,7 +804,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                                       ),
                                     )
                                   : const Icon(Icons.save),
-                              label: Text(_saving ? 'Saving...' : 'Save Settings'),
+                              label: Text(_saving ? 'Saving...' : 'Save'),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.blue,
                                 foregroundColor: Colors.white,
