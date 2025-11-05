@@ -1034,6 +1034,17 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                   urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                   userAgentPackageName: 'com.example.tag_mobile',
                 ),
+                // Show route polyline FIRST (so it appears under the markers)
+                if (_showRoute && _routePoints.isNotEmpty)
+                  PolylineLayer(
+                    polylines: [
+                      Polyline(
+                        points: _routePoints.map((point) => LatLng(point.latitude, point.longitude)).toList(),
+                        color: AppColors.primary.withAlpha(204),
+                        strokeWidth: 7,
+                      ),
+                    ],
+                  ),
                 MarkerLayer(
                   markers: [
                     // Show assigned bus
@@ -1157,17 +1168,6 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                           }).toList(),
                   ],
                 ),
-                // Show route polyline
-                if (_showRoute && _routePoints.isNotEmpty)
-                  PolylineLayer(
-                    polylines: [
-                      Polyline(
-                        points: _routePoints.map((point) => LatLng(point.latitude, point.longitude)).toList(),
-                        color: AppColors.primary.withAlpha(204),
-                        strokeWidth: 7,
-                      ),
-                    ],
-                  ),
               ],
             ),
           ),
