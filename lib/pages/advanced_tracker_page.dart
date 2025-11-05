@@ -1252,6 +1252,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                   final stop = stops[index];
                   final isClosest = stop.id == closestPointId;
                   final isUserPickup = stop.id == _userSettings?.pickupStopId;
+                  final isFirst = index == 0;
                   final isLast = index == stops.length - 1;
                   final stopName = stop.pointName ?? 'Stop ${stop.pointOrder ?? stop.id}';
 
@@ -1327,20 +1328,60 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: isClosest ? FontWeight.bold : FontWeight.w500,
-                                    color: isClosest ? AppColors.secondary : Colors.black87,
+                                    color: isClosest ? isFirst || isLast
+                                          ? Colors.green: Colors.lightGreen
+                                          : Colors.black87                                        
                                   ),
                                 ),
+                                if (isFirst && !isClosest)
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 4),
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: Colors.orangeAccent,
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: const Text(
+                                      'Route start',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                if (isLast && !isClosest)
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 4),
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: Colors.orangeAccent,
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: const Text(
+                                      'Route end',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
                                 if (isClosest)
                                   Container(
                                     margin: const EdgeInsets.only(top: 4),
                                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                     decoration: BoxDecoration(
-                                      color: AppColors.secondary,
+                                      color: isFirst
+                                          ? Colors.green
+                                          : (isLast ? Colors.green : Colors.lightGreen),
                                       borderRadius: BorderRadius.circular(4),
                                     ),
-                                    child: const Text(
-                                      'Bus is near here',
-                                      style: TextStyle(
+                                    child: Text(
+                                      isFirst
+                                          ? 'Bus started'
+                                          : (isLast ? 'Bus arrived' : 'Bus is near here'),
+                                      style: const TextStyle(
                                         fontSize: 10,
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
@@ -1352,7 +1393,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                                     margin: const EdgeInsets.only(top: 4),
                                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                     decoration: BoxDecoration(
-                                      color: AppColors.primary,
+                                      color: AppColors.primaryDark,
                                       borderRadius: BorderRadius.circular(4),
                                     ),
                                     child: const Text(
