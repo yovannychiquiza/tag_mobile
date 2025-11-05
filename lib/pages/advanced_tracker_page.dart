@@ -968,21 +968,23 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
   }
 
   Widget _buildMapContainer() {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x1A000000), // Fixed black with 10% opacity
-            blurRadius: 10,
-            offset: Offset(0, 4),
-          ),
-        ],
-      ),
-      clipBehavior: Clip.hardEdge,
-      child: Card(
-        color: Colors.white,
-        margin: EdgeInsets.zero,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x1A000000), // Fixed black with 10% opacity
+              blurRadius: 10,
+              offset: Offset(0, 4),
+            ),
+          ],
+        ),
+        clipBehavior: Clip.hardEdge,
+        child: Card(
+          color: Colors.white,
+          margin: EdgeInsets.zero,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -1020,7 +1022,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
               ),
             ),
             SizedBox(
-              height: 250,
+              height: 300,
               child: FlutterMap(
               mapController: _mapController,
               options: MapOptions(
@@ -1172,6 +1174,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
         ],
       ),
       ),
+      ),
     );
   }
 
@@ -1187,12 +1190,14 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
       return a.pointOrder!.compareTo(b.pointOrder!);
     });
 
-    return Card(
-      color: Colors.white,
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Card(
+        color: Colors.white,
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -1240,7 +1245,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
             ),
             const SizedBox(height: 16),
             SizedBox(
-              height: 300,
+              height: 250,
               child: ListView.builder(
                 itemCount: stops.length,
                 itemBuilder: (context, index) {
@@ -1372,6 +1377,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
             ),
           ],
         ),
+      ),
       ),
     );
   }
