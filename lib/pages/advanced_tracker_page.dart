@@ -682,7 +682,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
-      color: AppColors.primary.withAlpha(26),
+      color: AppColors.background,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -693,7 +693,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                 Icon(Icons.home, color: AppColors.primary, size: 20),
                 const SizedBox(width: 8),
                 Text(
-                  'Personalized Travel Information',
+                  'Customized Travel Information',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -855,7 +855,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
             ),
             const SizedBox(height: 8),
             const Text(
-              'Configure your home location and pickup stop in Settings to get personalized travel times and alerts.',
+              'Configure your home location and pickup stop in Settings to get customized travel times and alerts.',
               style: TextStyle(
                 color: AppColors.primary,
                 fontSize: 14,
