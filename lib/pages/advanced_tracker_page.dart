@@ -1047,31 +1047,6 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                   ),
                 MarkerLayer(
                   markers: [
-                    // Show assigned bus
-                    if (_assignedBus?.currentLocation != null)
-                      Marker(
-                        width: 23,
-                        height: 23,
-                        point: _busData.busPos,
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            color: AppColors.secondary,
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black26,
-                                blurRadius: 4,
-                                offset: Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: const Icon(
-                            Icons.directions_bus,
-                            color: Colors.white,
-                            size: 17,
-                          ),
-                        ),
-                      ),
                     // Show home location if configured
                     if (_userSettings?.homeLat != null && _userSettings?.homeLng != null)
                       Marker(
@@ -1166,6 +1141,31 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                               ),
                             );
                           }).toList(),
+                    // Show assigned bus (last so it appears on top)
+                    if (_assignedBus?.currentLocation != null)
+                      Marker(
+                        width: 23,
+                        height: 23,
+                        point: _busData.busPos,
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            color: AppColors.secondary,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 4,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.directions_bus,
+                            color: Colors.white,
+                            size: 17,
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ],
