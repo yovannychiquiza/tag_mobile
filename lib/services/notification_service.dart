@@ -142,6 +142,33 @@ class NotificationService {
     );
   }
 
+  // Show bus arrival at pickup stop notification
+  static Future<void> showBusArrivedNotification({
+    required String busNumber,
+    required String stopName,
+  }) async {
+    await showNotification(
+      id: 4,
+      title: '🎯 Bus Arrived!',
+      body: 'Bus $busNumber has arrived at $stopName! Time to board!',
+      payload: 'bus_arrived',
+    );
+  }
+
+  // Show bus approaching pickup stop notification
+  static Future<void> showBusApproachingNotification({
+    required String busNumber,
+    required String stopName,
+    required int stopsAway,
+  }) async {
+    await showNotification(
+      id: 5,
+      title: '🚌 Bus Approaching!',
+      body: 'Bus $busNumber is $stopsAway stop(s) away from $stopName. Get ready!',
+      payload: 'bus_approaching',
+    );
+  }
+
   // Cancel a specific notification
   static Future<void> cancelNotification(int id) async {
     await _notificationsPlugin.cancel(id);

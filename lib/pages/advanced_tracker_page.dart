@@ -49,6 +49,8 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
   bool _loading = true;
   Timer? _trackingTimer;
   int? _selectedStopId;
+  int? _lastClosestStopId;
+  bool _busArrivedNotificationSent = false;
 
   final MapController _mapController = MapController();
   final LatLng _defaultLocation = const LatLng(45.2733, -66.0633);
@@ -414,15 +416,107 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
 
   void _startRealTimeTracking() {
     if (!_isTracking || _userSettings?.routePathId == null) return;
-    
+
     _trackingTimer = Timer.periodic(const Duration(seconds: 10), (timer) async {
       await _refreshBusLocation();
-      
+
       // Calculate ETA using consolidated function
       if (_assignedBus?.currentLocation != null) {
         _calculateAndUpdateETA(_assignedBus!.currentLocation!, _userSettings, _routePoints);
+
+        // Check if notifications are enabled
+        if (_notifications) {
+          await _checkBusArrival();
+        }
       }
     });
+  }
+
+  // Check if bus has arrived at pickup stop and send notification
+  Future<void> _checkBusArrival() async {
+    if (_assignedBus?.currentLocation == null ||
+        _userSettings?.pickupStopId == null ||
+        _routePoints.isEmpty) {
+      return;
+    }
+
+    final busLat = _assignedBus!.currentLocation!.latitude;
+    final busLng = _assignedBus!.currentLocation!.longitude;
+
+    // Find the closest stop to the bus
+    final closestStopId = _getClosestPointToBus();
+
+    if (closestStopId == null) return;
+
+    // Get the pickup stop details
+    final pickupStop = _routePoints.firstWhere(
+      (point) => point.id == _userSettings!.pickupStopId && point.isStop,
+      orElse: () => RoutePoint(id: 0, routePathId: 0, latitude: 0, longitude: 0, isStop: false),
+    );
+
+    if (pickupStop.id == 0) return;
+
+    final stopName = pickupStop.pointName ?? 'Stop ${pickupStop.pointOrder ?? pickupStop.id}';
+
+    // Check if bus is at the pickup stop (within 100 meters)
+    final distanceToPickupStop = _calculateDistance(
+      busLat, busLng,
+      pickupStop.latitude, pickupStop.longitude
+    );
+
+    // Bus has arrived at pickup stop (within 100 meters / 0.1 km)
+    if (closestStopId == _userSettings!.pickupStopId && distanceToPickupStop < 0.1) {
+      if (!_busArrivedNotificationSent) {
+        // Send arrival notification
+        await NotificationService.showBusArrivedNotification(
+          busNumber: _busData.busNumber,
+          stopName: stopName,
+        );
+        setState(() {
+          _busArrivedNotificationSent = true;
+        });
+      }
+    } else {
+      // Reset flag when bus leaves the stop
+      if (_busArrivedNotificationSent && distanceToPickupStop > 0.2) {
+        setState(() {
+          _busArrivedNotificationSent = false;
+        });
+      }
+
+      // Check if bus is approaching (1-2 stops away)
+      if (closestStopId != _lastClosestStopId && closestStopId != _userSettings!.pickupStopId) {
+        // Calculate how many stops away
+        final stops = _routePoints.where((point) => point.isStop).toList();
+        stops.sort((a, b) {
+          if (a.pointOrder == null && b.pointOrder == null) return a.id.compareTo(b.id);
+          if (a.pointOrder == null) return 1;
+          if (b.pointOrder == null) return -1;
+          return a.pointOrder!.compareTo(b.pointOrder!);
+        });
+
+        final currentStopIndex = stops.indexWhere((s) => s.id == closestStopId);
+        final pickupStopIndex = stops.indexWhere((s) => s.id == _userSettings!.pickupStopId);
+
+        if (currentStopIndex != -1 && pickupStopIndex != -1) {
+          final stopsAway = pickupStopIndex - currentStopIndex;
+
+          // Send approaching notification when 1-2 stops away
+          if (stopsAway > 0 && stopsAway <= 2) {
+            await NotificationService.showBusApproachingNotification(
+              busNumber: _busData.busNumber,
+              stopName: stopName,
+              stopsAway: stopsAway,
+            );
+          }
+        }
+      }
+
+      // Update last closest stop
+      setState(() {
+        _lastClosestStopId = closestStopId;
+      });
+    }
   }
 
   Future<void> _refreshBusLocation() async {
