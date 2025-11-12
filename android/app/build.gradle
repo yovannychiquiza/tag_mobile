@@ -28,6 +28,8 @@ android {
     ndkVersion flutter.ndkVersion
 
     compileOptions {
+        // Enable core library desugaring
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -45,7 +47,7 @@ android {
         applicationId "com.bustrack.app.tag_mobile"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion flutter.minSdkVersion
+        minSdkVersion flutter.minSdkVersion  // Required for flutter_local_notifications with desugaring
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -66,4 +68,6 @@ flutter {
 
 dependencies {
     implementation 'com.google.android.gms:play-services-location:21.0.1'
+    // Core library desugaring for flutter_local_notifications
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
 }

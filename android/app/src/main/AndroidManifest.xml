@@ -8,6 +8,12 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <!-- Internet permission -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Notification permissions (for Android 13+) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Vibration for notifications -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- Wake lock for notifications -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     
     <application
         android:label="tag_mobile"
