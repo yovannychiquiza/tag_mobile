@@ -119,9 +119,9 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
 
   // Calculate ETA to pickup stop using route points
   ETAResult _calculateETAToPickupStop(
-    double busLat, 
-    double busLng, 
-    List<RoutePoint> routePoints, 
+    double busLat,
+    double busLng,
+    List<RoutePoint> routePoints,
     int? userPickupStopId
   ) {
     if (userPickupStopId == null || routePoints.isEmpty) {
@@ -192,21 +192,22 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
       final nextPoint = i + 1 < sortedPoints.length ? sortedPoints[i + 1] : null;
 
       if (nextPoint != null) {
-        // Use pre-calculated distanceToNext from database if available
+        // Use pre-calculated distanceToNext from database if available, otherwise calculate
         final segmentDistance = currentPoint.distanceToNext ?? _calculateDistance(
           currentPoint.latitude, currentPoint.longitude,
           nextPoint.latitude, nextPoint.longitude
         );
 
+        // Always add distance for accurate total distance calculation
+        totalDistance += segmentDistance;
+
         // Use timeToNext if available, otherwise calculate using averageSpeed
-        if (currentPoint.timeToNext != null) {
+        if (currentPoint.timeToNext != null && currentPoint.timeToNext! > 0) {
           totalTime += currentPoint.timeToNext!.toDouble();
         } else {
           final speed = currentPoint.averageSpeed ?? 30; // Use averageSpeed from database or default
           totalTime += (segmentDistance / speed) * 60; // Convert to minutes
         }
-
-        totalDistance += segmentDistance;
       }
 
       // Add stop time if this is a stop (but not for the final pickup stop)
