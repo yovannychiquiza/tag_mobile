@@ -156,7 +156,7 @@ class BusTrackingService {
     return degrees * (pi / 180);
   }
 
-  // Calculate ETA to pickup stop (simplified version of the web logic)
+  // Calculate ETA to pickup stop using route-based logic with database variables
   static Map<String, dynamic> calculateETAToPickupStop(
     BusLocation busLocation,
     List<RoutePoint> routePoints,
@@ -182,22 +182,102 @@ class BusTrackingService {
       };
     }
 
-    // Calculate direct distance and basic ETA
-    double distance = calculateDistance(
+    // Sort route points by order
+    final sortedPoints = [...routePoints];
+    sortedPoints.sort((a, b) {
+      if (a.pointOrder == null && b.pointOrder == null) return a.id.compareTo(b.id);
+      if (a.pointOrder == null) return 1;
+      if (b.pointOrder == null) return -1;
+      return a.pointOrder!.compareTo(b.pointOrder!);
+    });
+
+    // Find current bus position in route (closest point)
+    RoutePoint closestPoint = sortedPoints.first;
+    double minDistance = calculateDistance(
       busLocation.latitude,
       busLocation.longitude,
-      pickupStop.latitude,
-      pickupStop.longitude,
+      closestPoint.latitude,
+      closestPoint.longitude
     );
+    int currentPointIndex = 0;
 
-    // Simple ETA calculation (can be enhanced with route-based logic)
-    double averageSpeed = busLocation.speed > 0 ? busLocation.speed : 30; // km/h
-    int etaMinutes = ((distance / averageSpeed) * 60).round();
+    for (int i = 0; i < sortedPoints.length; i++) {
+      final point = sortedPoints[i];
+      final distance = calculateDistance(
+        busLocation.latitude,
+        busLocation.longitude,
+        point.latitude,
+        point.longitude
+      );
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestPoint = point;
+        currentPointIndex = i;
+      }
+    }
+
+    // Find pickup stop index
+    final pickupStopIndex = sortedPoints.indexWhere((point) => point.id == userPickupStopId);
+    if (pickupStopIndex == -1 || currentPointIndex > pickupStopIndex) {
+      return {
+        'distanceToStop': 0.0,
+        'etaMinutes': 0,
+        'nextStopName': 'Bus has passed this stop',
+      };
+    }
+
+    // Calculate route-based ETA using database variables
+    double totalTime = 0;
+    double totalDistance = 0;
+
+    // Add time from bus to first route point
+    final distanceToCurrentPoint = calculateDistance(
+      busLocation.latitude,
+      busLocation.longitude,
+      closestPoint.latitude,
+      closestPoint.longitude
+    );
+    if (distanceToCurrentPoint > 0.05) {
+      final averageSpeed = closestPoint.averageSpeed ?? 30;
+      totalTime += (distanceToCurrentPoint / averageSpeed) * 60;
+      totalDistance += distanceToCurrentPoint;
+    }
+
+    // Calculate time through all remaining points until pickup stop
+    for (int i = currentPointIndex; i < pickupStopIndex; i++) {
+      final currentPoint = sortedPoints[i];
+      final nextPoint = i + 1 < sortedPoints.length ? sortedPoints[i + 1] : null;
+
+      if (nextPoint != null) {
+        // Use pre-calculated distanceToNext from database if available
+        final segmentDistance = currentPoint.distanceToNext ?? calculateDistance(
+          currentPoint.latitude, currentPoint.longitude,
+          nextPoint.latitude, nextPoint.longitude
+        );
+
+        // Use timeToNext if available, otherwise calculate using averageSpeed
+        if (currentPoint.timeToNext != null) {
+          totalTime += currentPoint.timeToNext!.toDouble();
+        } else {
+          final speed = currentPoint.averageSpeed ?? 30;
+          totalTime += (segmentDistance / speed) * 60;
+        }
+
+        totalDistance += segmentDistance;
+      }
+
+      // Add stop time if this is a stop (but not for the final pickup stop)
+      if (currentPoint.isStop && i < pickupStopIndex - 1) {
+        totalTime += (currentPoint.averageStopTime ?? 2).toDouble();
+      }
+    }
 
     return {
-      'distanceToStop': double.parse(distance.toStringAsFixed(1)),
-      'etaMinutes': etaMinutes,
-      'nextStopName': 'Stop ${pickupStop.pointOrder ?? pickupStop.id}',
+      'distanceToStop': double.parse(totalDistance.toStringAsFixed(1)),
+      'etaMinutes': totalTime.round(),
+      'nextStopName': pickupStop.pointOrder != null
+        ? 'Stop ${pickupStop.pointOrder}'
+        : 'Stop ${pickupStop.id}',
     };
   }
 

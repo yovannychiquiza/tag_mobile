@@ -180,7 +180,8 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
     // Add time from bus to first route point (if bus is not exactly on a route point)
     final distanceToCurrentPoint = _calculateDistance(busLat, busLng, closestPoint.latitude, closestPoint.longitude);
     if (distanceToCurrentPoint > 0.05) { // If more than 50 meters away
-      const averageSpeed = 30; // km/h
+      // Use average speed from the closest point, or default to 30 km/h
+      final averageSpeed = closestPoint.averageSpeed ?? 30;
       totalTime += (distanceToCurrentPoint / averageSpeed) * 60; // Convert to minutes
       totalDistance += distanceToCurrentPoint;
     }
@@ -191,19 +192,27 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
       final nextPoint = i + 1 < sortedPoints.length ? sortedPoints[i + 1] : null;
 
       if (nextPoint != null) {
-        // Calculate from coordinates
-        final segmentDistance = _calculateDistance(
+        // Use pre-calculated distanceToNext from database if available
+        final segmentDistance = currentPoint.distanceToNext ?? _calculateDistance(
           currentPoint.latitude, currentPoint.longitude,
           nextPoint.latitude, nextPoint.longitude
         );
-        const speed = 30; // km/h default speed
-        totalTime += (segmentDistance / speed) * 60; // Convert to minutes
+
+        // Use timeToNext if available, otherwise calculate using averageSpeed
+        if (currentPoint.timeToNext != null) {
+          totalTime += currentPoint.timeToNext!.toDouble();
+        } else {
+          final speed = currentPoint.averageSpeed ?? 30; // Use averageSpeed from database or default
+          totalTime += (segmentDistance / speed) * 60; // Convert to minutes
+        }
+
         totalDistance += segmentDistance;
       }
 
       // Add stop time if this is a stop (but not for the final pickup stop)
+      // Use averageStopTime from database if available
       if (currentPoint.isStop && i < pickupStopIndex - 1) {
-        totalTime += 2; // Default 2 minutes stop time
+        totalTime += (currentPoint.averageStopTime ?? 2).toDouble();
       }
     }
 
