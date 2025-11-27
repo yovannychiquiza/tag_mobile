@@ -104,24 +104,53 @@ class ApiService {
 }
 
 // Data models
+class BusDriver {
+  final int id;
+  final String login;
+  final String name;
+  final String lastName;
+
+  BusDriver({
+    required this.id,
+    required this.login,
+    required this.name,
+    required this.lastName,
+  });
+
+  factory BusDriver.fromJson(Map<String, dynamic> json) {
+    return BusDriver(
+      id: json['Id'] ?? json['id'] ?? 0,
+      login: json['Login'] ?? json['login'] ?? '',
+      name: json['Name'] ?? json['name'] ?? '',
+      lastName: json['LastName'] ?? json['lastName'] ?? '',
+    );
+  }
+
+  String get fullName => '$name $lastName'.trim();
+}
+
 class Bus {
   final int id;
   final String busNumber;
   final int? routePathId;
+  final int? driverId;
   final String? licensePlate;
   final String? model;
   final int? capacity;
   final bool isActive;
+  final BusDriver? driver;
   final BusLocation? currentLocation;
 
   Bus({
     required this.id,
     required this.busNumber,
     this.routePathId,
+    this.driverId,
     this.licensePlate,
     this.model,
     this.capacity,
     required this.isActive,
+    this.driver,
     this.currentLocation,
   });
 
@@ -130,12 +159,16 @@ class Bus {
       id: json['Id'] ?? json['id'] ?? 0,
       busNumber: json['BusNumber'] ?? json['busNumber'] ?? '',
       routePathId: json['RoutePathId'] ?? json['routePathId'],
+      driverId: json['DriverId'] ?? json['driverId'],
       licensePlate: json['LicensePlate'] ?? json['licensePlate'],
       model: json['Model'] ?? json['model'],
       capacity: json['Capacity'] ?? json['capacity'],
       isActive: json['IsActive'] ?? json['isActive'] ?? true,
-      currentLocation: json['current_location'] != null 
-          ? BusLocation.fromJson(json['current_location']) 
+      driver: json['driver'] != null
+          ? BusDriver.fromJson(json['driver'])
+          : null,
+      currentLocation: json['current_location'] != null
+          ? BusLocation.fromJson(json['current_location'])
           : null,
     );
   }
@@ -145,6 +178,7 @@ class Bus {
       'Id': id,
       'BusNumber': busNumber,
       'RoutePathId': routePathId,
+      'DriverId': driverId,
       'LicensePlate': licensePlate,
       'Model': model,
       'Capacity': capacity,

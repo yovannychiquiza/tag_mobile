@@ -51,6 +51,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
   int? _selectedStopId;
   int? _lastClosestStopId;
   bool _busArrivedNotificationSent = false;
+  String _driverName = '';
 
   final MapController _mapController = MapController();
   final LatLng _defaultLocation = const LatLng(45.2733, -66.0633);
@@ -345,11 +346,20 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
             _busData = _busData.copyWith(
               busNumber: routeBus.busNumber,
               route: userSettings?.routeName ?? 'Route ${userSettings?.routePathId}',
-              busPos: routeBus.currentLocation != null 
+              busPos: routeBus.currentLocation != null
                 ? LatLng(routeBus.currentLocation!.latitude, routeBus.currentLocation!.longitude)
                 : _busData.busPos,
               speed: routeBus.currentLocation?.speed ?? _busData.speed,
             );
+            // Set driver name from assigned bus
+            if (routeBus.driver != null) {
+              _driverName = routeBus.driver!.fullName;
+              if (_driverName.isEmpty) {
+                _driverName = routeBus.driver!.login;
+              }
+            } else {
+              _driverName = '';
+            }
           });
         }
         
@@ -549,6 +559,15 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
             busPos: newBusPos,
             speed: routeBus.currentLocation!.speed ?? _busData.speed,
           );
+          // Update driver name from assigned bus
+          if (routeBus.driver != null) {
+            _driverName = routeBus.driver!.fullName;
+            if (_driverName.isEmpty) {
+              _driverName = routeBus.driver!.login;
+            }
+          } else {
+            _driverName = '';
+          }
         });
 
         // Center map on bus if the toggle is enabled
@@ -612,6 +631,28 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
                                     fontSize: 14,
                                   ),
                                 ),
+                                if (_driverName.isNotEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 4),
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.person,
+                                          size: 14,
+                                          color: AppColors.primary,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          _driverName,
+                                          style: const TextStyle(
+                                            color: AppColors.primary,
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                               ],
                             ),
                           ),
