@@ -4,6 +4,7 @@ import '../store/auth_store.dart';
 import '../services/user_settings_service.dart';
 import '../services/routes_service.dart';
 import '../theme/app_colors.dart';
+import '../widgets/google_places_search_field.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -412,6 +413,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                                     ),
                                     const SizedBox(height: 8),
                                     DropdownButtonFormField<int>(
+                                      isExpanded: true,
                                       value: _selectedRouteId,
                                       dropdownColor: Colors.white,
                                       style: const TextStyle(
@@ -570,6 +572,29 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                                       ],
                                     ),
                                     const SizedBox(height: 8),
+
+                                    // Google Places Search
+                                    GooglePlacesSearchField(
+                                      initialAddress: null,
+                                      onLocationSelected: (lat, lng, address) {
+                                        setState(() {
+                                          _homeLatController.text = lat.toString();
+                                          _homeLngController.text = lng.toString();
+                                        });
+                                        _showSnackBar('Location set: $address');
+                                      },
+                                    ),
+                                    const SizedBox(height: 16),
+
+                                    const Text(
+                                      'Or manually enter coordinates:',
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        color: Color(0xFF757575),
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
                                     Row(
                                       children: [
                                         Expanded(
@@ -652,14 +677,6 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                                           ),
                                         ),
                                       ],
-                                    ),
-                                    const SizedBox(height: 8),
-                                    const Text(
-                                      'Set your home coordinates for better route tracking and distance calculations.',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Color(0xFF757575),
-                                      ),
                                     ),
                                     const SizedBox(height: 12),
                                     Wrap(

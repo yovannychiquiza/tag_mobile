@@ -2,16 +2,21 @@ class AppConfig {
   static const String _devBaseUrl = 'http://192.168.2.10:8000';
   // static const String _devBaseUrl = 'https://tagback.onrender.com';
   static const String _prodBaseUrl = 'https://your-production-api.com';
-  
+
+  // Google Places API Key
+  // Get your API key from: https://console.cloud.google.com/google/maps-apis/
+  // Enable: Places API, Geocoding API
+  static const String googlePlacesApiKey = 'AIzaSyAaqPk4VIypRekKkZsdXo9nrWXuJjm4p7k';
+
   // Automatically detect environment
   static String get baseUrl {
     // You can also use --dart-define for build-time configuration
     const String? configuredUrl = String.fromEnvironment('API_BASE_URL');
-    
+
     if (configuredUrl != null && configuredUrl.isNotEmpty) {
       return configuredUrl;
     }
-    
+
     // Default to development URL
     return _devBaseUrl;
   }
