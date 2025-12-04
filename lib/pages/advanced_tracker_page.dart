@@ -8,6 +8,7 @@ import '../services/api_service.dart';
 import '../services/user_settings_service.dart';
 import '../services/routes_service.dart';
 import '../services/notification_service.dart';
+import '../services/local_preferences_service.dart';
 import '../theme/app_colors.dart';
 
 class AdvancedTrackerPage extends StatefulWidget {
@@ -40,9 +41,9 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
 
   Bus? _assignedBus;
   LatLng? _userPos;
-  bool _isTracking = true;
+  bool _isTracking = false;
   bool _notifications = true;
-  bool _showRoute = true;
+  bool _showRoute = false;
   bool _centerOnBus = true;
   List<RoutePoint> _routePoints = [];
   UserSettings? _userSettings;
@@ -59,9 +60,28 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
   @override
   void initState() {
     super.initState();
-    _initializeNotifications();
-    _loadUserData();
-    _getCurrentLocation();
+    _initializeApp();
+  }
+
+  Future<void> _initializeApp() async {
+    await _initializeNotifications();
+    await _loadPreferences();
+    await _loadUserData();
+    await _getCurrentLocation();
+  }
+
+  Future<void> _loadPreferences() async {
+    final notifications = await LocalPreferencesService.getNotificationsEnabled();
+    final tracking = await LocalPreferencesService.getTrackingEnabled();
+    final route = await LocalPreferencesService.getRouteEnabled();
+    final centered = await LocalPreferencesService.getCenteredEnabled();
+
+    setState(() {
+      _notifications = notifications;
+      _isTracking = tracking;
+      _showRoute = route;
+      _centerOnBus = centered;
+    });
   }
 
   Future<void> _initializeNotifications() async {
@@ -1039,10 +1059,13 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
       mainAxisSpacing: 12,
       children: [
         ElevatedButton.icon(
-          onPressed: () {
+          onPressed: () async {
+            final newValue = !_isTracking;
             setState(() {
-              _isTracking = !_isTracking;
+              _isTracking = newValue;
             });
+            // Save preference to device storage
+            await LocalPreferencesService.setTrackingEnabled(newValue);
             if (_isTracking) {
               _startRealTimeTracking();
             } else {
@@ -1061,10 +1084,13 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
           ),
         ),
         ElevatedButton.icon(
-          onPressed: () {
+          onPressed: () async {
+            final newValue = !_notifications;
             setState(() {
-              _notifications = !_notifications;
+              _notifications = newValue;
             });
+            // Save preference to device storage
+            await LocalPreferencesService.setNotificationsEnabled(newValue);
           },
           icon: const Icon(Icons.notifications),
           label: const Text('Notify'),
@@ -1078,10 +1104,13 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
           ),
         ),
         ElevatedButton.icon(
-          onPressed: () {
+          onPressed: () async {
+            final newValue = !_showRoute;
             setState(() {
-              _showRoute = !_showRoute;
+              _showRoute = newValue;
             });
+            // Save preference to device storage
+            await LocalPreferencesService.setRouteEnabled(newValue);
           },
           icon: const Icon(Icons.route),
           label: const Text('Route'),
@@ -1095,10 +1124,13 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
           ),
         ),
         ElevatedButton.icon(
-          onPressed: () {
+          onPressed: () async {
+            final newValue = !_centerOnBus;
             setState(() {
-              _centerOnBus = !_centerOnBus;
+              _centerOnBus = newValue;
             });
+            // Save preference to device storage
+            await LocalPreferencesService.setCenteredEnabled(newValue);
             if (_centerOnBus && _assignedBus?.currentLocation != null) {
               _mapController.move(_busData.busPos, 15);
             }
