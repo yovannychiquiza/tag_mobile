@@ -41,7 +41,7 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
   Bus? _assignedBus;
   LatLng? _userPos;
   bool _isTracking = true;
-  bool _notifications = false;
+  bool _notifications = true;
   bool _showRoute = true;
   bool _centerOnBus = true;
   List<RoutePoint> _routePoints = [];
@@ -1061,61 +1061,10 @@ class _AdvancedTrackerPageState extends State<AdvancedTrackerPage> {
           ),
         ),
         ElevatedButton.icon(
-          onPressed: () async {
+          onPressed: () {
             setState(() {
               _notifications = !_notifications;
             });
-
-            // Send push notification when enabled
-            if (_notifications) {
-              if (_assignedBus != null) {
-                // Send bus tracking notification
-                await NotificationService.showBusTrackingNotification(
-                  busNumber: _busData.busNumber,
-                  eta: _busData.eta,
-                  distance: _busData.distance,
-                );
-
-                // If personalized ETA is available and user needs to leave soon
-                if (_userSettings?.homeLat != null &&
-                    _userSettings?.homeLng != null &&
-                    _personalizedETA.needToLeaveIn <= 10) {
-                  await NotificationService.showETAAlert(
-                    busNumber: _busData.busNumber,
-                    minutesToLeave: _personalizedETA.needToLeaveIn,
-                  );
-                }
-
-                // Show in-app confirmation
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Push notification sent!'),
-                      backgroundColor: Colors.green,
-                      duration: Duration(seconds: 2),
-                    ),
-                  );
-                }
-              } else {
-                // No bus assigned
-                await NotificationService.showNotification(
-                  id: 3,
-                  title: 'Bus Tracker',
-                  body: 'No bus is currently assigned to your route.',
-                  payload: 'no_bus',
-                );
-
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Test notification sent!'),
-                      backgroundColor: Colors.orange,
-                      duration: Duration(seconds: 2),
-                    ),
-                  );
-                }
-              }
-            }
           },
           icon: const Icon(Icons.notifications),
           label: const Text('Notify'),
